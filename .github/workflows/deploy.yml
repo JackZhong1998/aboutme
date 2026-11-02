@@ -30,7 +30,7 @@ jobs:
       - name: Prepare public files only
         run: |
           mkdir -p _site
-          cp index.html resume.html resume.md resume.pdf profile.md notes.md .nojekyll _site/
+          cp index.html resume.html resume.pdf .nojekyll _site/
           cp -R assets _site/assets
 
       - name: Upload artifact
