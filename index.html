@@ -3,1006 +3,576 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>钟镇杰 · AI Product Manager — Designing the Human × Agent Interface</title>
-<meta name="description" content="钟镇杰，剪映 AI 产品经理。在人与 Agent 的接触面上做产品：GUI 让人舒服地消费内容，LUI 把对话与任务的下发、执行分离。nowbuild.ai、todoAgent、voicemind、bewithyou.online。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230C1410'/%3E%3Cpath d='M10 16a6 6 0 0 1 6-6h2.5a4.5 4.5 0 0 1 1.2 8.84A3.5 3.5 0 0 1 18.5 22H16a6 6 0 0 1-6-6z' fill='none' stroke='%235EEAD4' stroke-width='2.2' stroke-linecap='round'/%3E%3Ccircle cx='22' cy='11' r='2' fill='%23FF5C39'/%3E%3C/svg%3E">
+<title>钟镇杰 — AI Builder</title>
+<meta name="description" content="钟镇杰，AI Builder。在做互动平台与 NowBuild.ai，在剪映做图片、成片与剪辑 Agent。关注人与 AI 的接触面、Personal Agent 与言出法随的体验。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f7f4ee'/%3E%3Ccircle cx='16' cy='16' r='6.5' fill='none' stroke='%23b3442b' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://miaoda.feishu.cn">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* ============================================================
-   设计系统：LUI（墨色终端，对话/任务）× GUI（纸张编辑器，内容消费）
-   ============================================================ */
 :root{
-  --ink:#0C1410; --ink-2:#121d17; --ink-3:#18261e;
-  --line-ink:rgba(94,234,212,.16); --line-ink-strong:rgba(94,234,212,.42);
-  --paper:#F4EFE6; --paper-2:#ECE5D7; --paper-3:#E3D9C6;
-  --line-paper:rgba(12,20,16,.16);
-  --mint:#5EEAD4; --mint-deep:#2DD4BF;
-  --signal:#FF5C39; --signal-soft:#FF8A66;
-  --ink-text:#E7F2EC; --ink-mut:#9DB7AA; --ink-faint:#6E8679;
-  --paper-text:#1A1712; --paper-mut:#6B6253; --paper-faint:#93886F;
-  --white:#FBFAF7;
-  --font-display:"Space Grotesk","Noto Sans SC",sans-serif;
-  --font-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
-  --font-mono:"JetBrains Mono","SF Mono",ui-monospace,monospace;
-  --maxw:1120px;
+  --paper:#f7f4ee; --paper-2:#f1ece2; --paper-3:#e8e1d3;
+  --ink:#201d19; --ink-2:#4a443c; --mut:#857c6e; --faint:#ab a190;
+  --faint:#aca391;
+  --rule:#ddd5c5; --rule-2:#c9bfaa;
+  --red:#b3442b; --red-2:#93361f;
+  --serif:"Newsreader","Noto Serif SC",Georgia,"Songti SC",serif;
+  --sans:"Noto Sans SC","PingFang SC",-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --read:680px; --w:1080px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--font-body);background:var(--ink);color:var(--ink-text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-::selection{background:var(--mint);color:var(--ink)}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);
+  -webkit-font-smoothing:antialiased;line-height:1.75;overflow-x:hidden;
+  font-feature-settings:"palt";}
+::selection{background:var(--red);color:var(--paper)}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
-.mono{font-family:var(--font-mono)}
-.en{font-family:var(--font-display)}
+img{display:block;max-width:100%}
+.w{max-width:var(--w);margin:0 auto;padding:0 32px}
+.read{max-width:var(--read);margin:0 auto;padding:0 32px}
+.sans{font-family:var(--sans)}
+.mono{font-family:var(--mono)}
+.italic{font-style:italic}
+.link-u{background:linear-gradient(var(--red),var(--red)) left bottom/0 1px no-repeat;transition:background-size .35s ease;padding-bottom:2px}
+.link-u:hover{background-size:100% 1px}
 
-/* 细颗粒噪点（独立装饰层，不遮挡内容） */
-.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:40;transition:background .4s,box-shadow .4s,backdrop-filter .4s}
+.nav.on{background:rgba(247,244,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--rule)}
+.nav-in{max-width:var(--w);margin:0 auto;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:var(--serif);font-size:19px;letter-spacing:.02em;display:flex;align-items:center;gap:11px}
+.brand .mk{width:11px;height:11px;border-radius:50%;background:var(--red);display:inline-block}
+.nav-l{display:flex;gap:30px;font-family:var(--sans);font-size:13px;color:var(--ink-2)}
+.nav-l a{position:relative;padding:3px 0;transition:color .25s}
+.nav-l a:hover{color:var(--red)}
+@media(max-width:760px){.nav-l a:not(.nav-r){display:none}.nav-in{height:60px}.w{padding:0 22px}.read{padding:0 22px}}
 
-/* ---------- 顶栏 ---------- */
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  background:rgba(12,20,16,.72);border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
-.nav.scrolled{border-bottom-color:var(--line-ink);background:rgba(12,20,16,.9)}
-.nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
-.brand .loop-mark{width:20px;height:20px;flex:0 0 auto}
-.brand b{color:var(--mint)}
-.nav-links{display:flex;align-items:center;gap:26px;font-size:13.5px;color:var(--ink-mut)}
-.nav-links a{position:relative;padding:4px 0;transition:color .2s}
-.nav-links a:hover{color:var(--ink-text)}
-.nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1.5px;background:var(--mint);transition:right .25s}
-.nav-links a:hover::after{right:0}
-.nav-cta{font-family:var(--font-mono);font-size:12.5px;color:var(--ink);background:var(--mint);padding:8px 14px;border-radius:3px;font-weight:600;transition:transform .2s,box-shadow .2s}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(94,234,212,.3)}
-@media(max-width:820px){.nav-links a:not(.nav-cta){display:none}}
+/* ---------- hero ---------- */
+.hero{min-height:96svh;display:flex;align-items:center;padding:120px 0 70px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+.hero-k{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--red);margin-bottom:30px;text-transform:uppercase}
+.hero h1{font-weight:500;font-size:clamp(46px,7vw,92px);line-height:1.04;letter-spacing:-.01em}
+.hero h1 .it{font-style:italic;font-weight:400}
+.hero-sub{margin-top:30px;font-family:var(--sans);font-size:16.5px;line-height:1.9;color:var(--ink-2);max-width:480px}
+.hero-sub b{color:var(--ink);font-weight:500}
+.hero-meta{margin-top:38px;display:flex;flex-wrap:wrap;gap:9px 22px;font-family:var(--mono);font-size:12px;color:var(--mut)}
+.hero-meta span{display:inline-flex;align-items:center;gap:8px}
+.hero-meta i{width:4px;height:4px;border-radius:50%;background:var(--red);display:inline-block}
+.portrait{position:relative}
+.portrait img{width:100%;aspect-ratio:4/5;object-fit:cover;filter:grayscale(1) contrast(1.04);border-radius:2px}
+.portrait figcaption{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mut);display:flex;justify-content:space-between;gap:12px}
+.portrait::before{content:"";position:absolute;left:-14px;top:16px;right:14px;bottom:-14px;border:1px solid var(--rule-2);z-index:-1;border-radius:2px}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr;gap:46px}.portrait{max-width:340px;margin:0 auto;width:100%}.hero{padding-top:104px}}
 
-/* ---------- 通用区块 ---------- */
-section{position:relative}
-.sec{padding:104px 0}
-.sec-head{margin-bottom:56px}
-.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;margin-bottom:18px}
-.ink .eyebrow{color:var(--mint)} .paper .eyebrow{color:var(--signal)}
-.eyebrow::before{content:"";width:26px;height:1px;background:currentColor;opacity:.7}
-.sec-title{font-family:var(--font-display);font-weight:700;font-size:clamp(27px,4vw,40px);line-height:1.22;letter-spacing:-.01em}
-.sec-sub{margin-top:14px;max-width:620px;font-size:15.5px}
-.ink .sec-sub{color:var(--ink-mut)} .paper .sec-sub{color:var(--paper-mut)}
+/* ---------- section frame ---------- */
+.sec{padding:118px 0}
+.sec-h{margin-bottom:64px}
+.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.kicker::after{content:"";height:1px;background:var(--rule-2);flex:1;max-width:120px}
+.sec-h h2{font-weight:500;font-size:clamp(30px,4.4vw,50px);line-height:1.12;letter-spacing:-.005em}
+.sec-h p{margin-top:18px;font-family:var(--sans);font-size:15.5px;color:var(--mut);max-width:520px}
 
-.ink{background:var(--ink);color:var(--ink-text)}
-.paper{background:var(--paper);color:var(--paper-text)}
-
-/* ---------- HERO ---------- */
-.hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 70px;
-  background:radial-gradient(900px 520px at 82% -8%,rgba(94,234,212,.13),transparent 60%),
-             radial-gradient(700px 500px at -10% 100%,rgba(45,212,191,.08),transparent 55%),var(--ink)}
-.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center}
-.hero-tag{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:12px;color:var(--ink-mut);
-  border:1px solid var(--line-ink);border-radius:100px;padding:6px 13px;margin-bottom:26px}
-.hero-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);animation:pulse 2.2s infinite}
-.hero-ava{position:relative;width:26px;height:26px;flex:0 0 26px}
-.hero-ava img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--line-ink-strong)}
-.hero-ava i{position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:var(--mint);border:2px solid var(--ink);box-shadow:0 0 8px var(--mint)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(38px,6.4vw,68px);line-height:1.06;letter-spacing:-.02em}
-.hero h1 .mint{color:var(--mint)}
-.hero h1 .zh{font-family:var(--font-body);font-weight:900;display:block;margin-top:6px;font-size:.62em;letter-spacing:.02em}
-.hero-role{margin-top:22px;font-size:17px;color:var(--ink-mut);max-width:520px}
-.hero-role b{color:var(--ink-text);font-weight:600}
-.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
-.btn{display:inline-flex;align-items:center;gap:9px;font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:4px;transition:transform .2s,box-shadow .2s,background .2s}
-.btn svg{width:15px;height:15px}
-.btn-primary{background:var(--mint);color:var(--ink)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(94,234,212,.32)}
-.btn-ghost{border:1px solid var(--line-ink-strong);color:var(--ink-text)}
-.btn-ghost:hover{background:rgba(94,234,212,.1);transform:translateY(-2px)}
-.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.chip{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-mut);border:1px solid var(--line-ink);border-radius:3px;padding:5px 10px}
-.chip em{color:var(--mint);font-style:normal}
-
-/* 终端面板 */
-.terminal{border:1px solid var(--line-ink-strong);border-radius:10px;overflow:hidden;background:var(--ink-2);
-  box-shadow:0 40px 90px -30px rgba(0,0,0,.75);font-family:var(--font-mono);font-size:13px;line-height:1.85}
-.term-bar{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--line-ink);background:var(--ink-3)}
-.term-bar i{width:10px;height:10px;border-radius:50%;display:block}
-.term-bar i:nth-child(1){background:#ff5f57}.term-bar i:nth-child(2){background:#febc2e}.term-bar i:nth-child(3){background:#28c840}
-.term-title{margin-left:8px;font-size:11.5px;color:var(--ink-faint)}
-.term-body{padding:18px 18px 20px;min-height:262px}
-.tline{white-space:pre-wrap;word-break:break-word}.tline .c{color:var(--ink-faint)}
-.tline .k{color:var(--mint)}.tline .o{color:var(--signal-soft)}.tline .v{color:var(--ink-text)}
-.tline .ok{color:#7EE0A0}
-.caret{display:inline-block;width:8px;height:15px;background:var(--mint);vertical-align:-2px;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.term-foot{padding:11px 18px;border-top:1px solid var(--line-ink);font-size:11.5px;color:var(--ink-faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-
-/* ticker */
-.ticker{border-top:1px solid var(--line-ink);border-bottom:1px solid var(--line-ink);background:var(--ink-2);overflow:hidden;padding:15px 0}
-.ticker-track{display:flex;gap:0;width:max-content;animation:marquee 32s linear infinite}
-.ticker:hover .ticker-track{animation-play-state:paused}
-.ticker span{font-family:var(--font-mono);font-size:13px;color:var(--ink-mut);padding:0 22px;display:flex;align-items:center;gap:22px;white-space:nowrap}
-.ticker span::after{content:"◆";color:var(--mint);font-size:9px}
-@keyframes marquee{to{transform:translateX(-50%)}}
-
-/* ---------- 主张 GUI × LUI ---------- */
-.thesis-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-.face{border-radius:12px;padding:38px 34px 34px;position:relative;overflow:hidden}
-.face-lui{background:var(--ink-2);border:1px solid var(--line-ink)}
-.face-gui{background:var(--white);border:1px solid var(--line-paper);color:var(--paper-text)}
-.face-tag{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;margin-bottom:20px}
-.face-lui .face-tag{color:var(--mint)} .face-gui .face-tag{color:var(--signal)}
-.face h3{font-family:var(--font-display);font-size:23px;font-weight:700;margin-bottom:12px;line-height:1.3}
-.face-gui h3{color:var(--paper-text)}
-.face>p{font-size:14.5px;margin-bottom:24px}
-.face-lui>p{color:var(--ink-mut)} .face-gui>p{color:var(--paper-mut)}
-.face ul{list-style:none;display:flex;flex-direction:column;gap:14px}
-.face li{display:flex;gap:13px;font-size:14px;align-items:flex-start}
-.face li .ic{flex:0 0 22px;height:22px;border-radius:6px;display:grid;place-items:center;margin-top:1px}
-.face-lui li .ic{background:rgba(94,234,212,.12);color:var(--mint)}
-.face-gui li .ic{background:rgba(255,92,57,.12);color:var(--signal)}
-.face li .ic svg{width:13px;height:13px}
-.face-mid{display:flex;align-items:center;justify-content:center;margin:0 -18px;position:relative}
-.face-x{font-family:var(--font-display);font-weight:700;font-size:15px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;z-index:2}
-.face-lui .face-x{background:var(--ink);color:var(--mint);border:1px solid var(--line-ink-strong)}
-.thesis-note{margin-top:30px;font-family:var(--font-mono);font-size:12.5px;color:var(--ink-faint);display:flex;gap:10px;align-items:center}
-.thesis-note b{color:var(--mint);font-weight:500}
-@media(max-width:760px){.thesis-grid{grid-template-columns:1fr}.face-mid{margin:6px 0}.face-x{background:var(--ink);color:var(--mint);border:1px solid var(--line-ink-strong)}}
-
-/* ---------- 产品卡 ---------- */
-.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
-.prod{border-radius:12px;overflow:hidden;background:var(--ink-2);border:1px solid var(--line-ink);display:flex;flex-direction:column;
-  transition:transform .3s,border-color .3s,box-shadow .3s}
-.prod:hover{transform:translateY(-5px);border-color:var(--line-ink-strong);box-shadow:0 24px 60px -28px rgba(94,234,212,.28)}
-.prod-visual{height:178px;position:relative;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid var(--line-ink)}
-.prod-visual .pv-big{font-family:var(--font-display);font-weight:700;font-size:30px;letter-spacing:-.01em;z-index:2;text-align:center;padding:0 24px;line-height:1.25}
-.prod-visual .pv-en{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;z-index:2;opacity:.75;margin-top:8px}
-.prod-body{padding:24px 24px 26px;display:flex;flex-direction:column;gap:14px;flex:1}
-.prod-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.prod-head h3{font-family:var(--font-display);font-size:20px;font-weight:700}
-.prod-head .idx{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint)}
-.prod-desc{font-size:13.8px;color:var(--ink-mut);flex:1}
-.prod-desc b{color:var(--ink-text);font-weight:600}
-.prod-tags{display:flex;flex-wrap:wrap;gap:7px}
-.prod-tags span{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-mut);border:1px solid var(--line-ink);border-radius:3px;padding:3px 8px}
-.prod-link{margin-top:2px;font-family:var(--font-mono);font-size:12.5px;color:var(--mint);display:inline-flex;align-items:center;gap:7px}
-.prod-link svg{width:13px;height:13px;transition:transform .2s}
-.prod-link:hover svg{transform:translateX(3px)}
-.prod-link.off{color:var(--ink-faint);cursor:default}
-/* 视觉底纹 */
-.pv-1{background:radial-gradient(420px 200px at 80% 0,rgba(94,234,212,.22),transparent 60%),linear-gradient(150deg,#16241c,#0E1813)}
-.pv-1 .pv-big{color:var(--mint)}
-.pv-2{background:radial-gradient(420px 200px at 15% 100%,rgba(45,212,191,.18),transparent 60%),linear-gradient(150deg,#101B15,#0C150F)}
-.pv-2 .pv-big{color:var(--ink-text)}
-.pv-3{background:radial-gradient(420px 200px at 50% 0,rgba(255,92,57,.2),transparent 62%),linear-gradient(150deg,#17231c,#0E1813)}
-.pv-3 .pv-big{color:var(--signal-soft)}
-.pv-4{background:radial-gradient(420px 200px at 85% 100%,rgba(94,234,212,.2),transparent 60%),linear-gradient(150deg,#142019,#0D1711)}
-.pv-4 .pv-big{color:var(--mint)}
-.pv-svg{position:absolute;inset:0;opacity:.5}
-@media(max-width:760px){.prod-grid{grid-template-columns:1fr}}
-
-/* ---------- 开源 ---------- */
-.oss-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.oss{border-radius:12px;overflow:hidden;background:var(--white);border:1px solid var(--line-paper);
-  transition:transform .3s,box-shadow .3s}
-.oss:hover{transform:translateY(-5px);box-shadow:0 26px 60px -26px rgba(26,23,18,.35)}
-.oss img{width:100%;height:200px;object-fit:cover;border-bottom:1px solid var(--line-paper);background:#0D1117}
-.oss-body{padding:22px 24px 26px}
-.oss-body h3{font-family:var(--font-mono);font-size:16px;font-weight:600;margin-bottom:10px;word-break:break-all}
-.oss-body p{font-size:13.5px;color:var(--paper-mut);margin-bottom:16px}
-.oss-stack{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
-.oss-stack span{font-family:var(--font-mono);font-size:10.5px;background:var(--paper-2);color:var(--paper-mut);border-radius:3px;padding:3px 8px}
-.oss-links{display:flex;gap:18px;font-family:var(--font-mono);font-size:12.5px}
-.oss-links a{display:inline-flex;align-items:center;gap:7px;color:var(--signal);font-weight:600}
-.oss-links a svg{width:13px;height:13px}.oss-links a:hover{text-decoration:underline}
-@media(max-width:760px){.oss-grid{grid-template-columns:1fr}}
-
-/* ---------- 滚动揭示 ---------- */
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.65,.3,1),transform .7s cubic-bezier(.2,.65,.3,1)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 
-/* ---------- 成绩（纸张区） ---------- */
-.impact{background:var(--paper);color:var(--paper-text)}
-.impact .eyebrow{color:var(--signal)}
-.impact .sec-sub{color:var(--paper-mut)}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line-paper);background:var(--white);border-radius:12px;overflow:hidden}
-.stat{padding:28px 24px;border-right:1px solid var(--line-paper)}
-.stat:last-child{border-right:0}
-.stat .num{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,3.2vw,40px);line-height:1;letter-spacing:-.02em;color:var(--paper-text)}
-.stat .num em{font-style:normal;color:var(--signal)}
-.stat .lab{margin-top:10px;font-size:12.5px;color:var(--paper-mut);line-height:1.5}
-@media(max-width:860px){.stat-grid{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:0}.stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line-paper)}.stat:nth-child(3){border-right:1px solid var(--line-paper)}}
-.module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
-.module{background:var(--white);border:1px solid var(--line-paper);border-radius:10px;padding:24px 22px}
-.module h4{font-family:var(--font-display);font-size:16.5px;font-weight:700;display:flex;align-items:center;gap:9px;margin-bottom:12px}
-.module h4 .tag{font-family:var(--font-mono);font-size:10px;font-weight:500;color:#fff;background:var(--signal);border-radius:3px;padding:2px 7px}
-.module ul{list-style:none;display:flex;flex-direction:column;gap:9px}
-.module li{font-size:13px;color:var(--paper-mut);padding-left:16px;position:relative;line-height:1.6}
-.module li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--signal);opacity:.75}
-.module li b{color:var(--paper-text);font-weight:700}
-@media(max-width:860px){.module-grid{grid-template-columns:1fr}}
-.impact-note{margin-top:26px;font-size:13.5px;color:var(--paper-mut);display:flex;gap:12px;align-items:flex-start}
-.impact-note svg{width:17px;height:17px;flex:0 0 17px;margin-top:2px;color:var(--signal)}
+/* ---------- statement ---------- */
+.stmt{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:104px 0}
+.stmt .big{font-size:clamp(25px,3.6vw,40px);line-height:1.5;font-weight:400;letter-spacing:.004em}
+.stmt .big em{font-style:italic;color:var(--red-2)}
+.stmt .big .dim{color:var(--ink-2)}
+.stmt-by{margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--mut);letter-spacing:.08em}
 
-/* ---------- 履历时间轴（墨色区） ---------- */
-.timeline{position:relative;display:flex;flex-direction:column;gap:0}
-.tl-item{display:grid;grid-template-columns:150px 30px 1fr;gap:0}
-.tl-date{font-family:var(--font-mono);font-size:12.5px;color:var(--mint);padding-top:26px;text-align:right;padding-right:22px;white-space:nowrap}
-.tl-axis{position:relative;display:flex;justify-content:center}
-.tl-axis::before{content:"";position:absolute;top:0;bottom:0;width:1px;background:var(--line-ink-strong)}
-.tl-item:first-child .tl-axis::before{top:28px}
-.tl-item:last-child .tl-axis::before{bottom:calc(100% - 28px)}
-.tl-dot{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--mint);margin-top:29px;z-index:2;flex:0 0 11px;box-shadow:0 0 0 4px rgba(94,234,212,.08)}
-.tl-item.hot .tl-dot{background:var(--signal);border-color:var(--signal);box-shadow:0 0 0 4px rgba(255,92,57,.12)}
-.tl-card{padding:18px 0 34px 26px}
-.tl-item:last-child .tl-card{padding-bottom:4px}
-.tl-card h3{font-family:var(--font-display);font-size:17.5px;font-weight:700}
-.tl-card .org{font-size:13.5px;color:var(--ink-mut);margin:3px 0 8px}
-.tl-card .org b{color:var(--mint);font-weight:600}
-.tl-card p{font-size:13.3px;color:var(--ink-mut);line-height:1.7}
-.tl-card p b{color:var(--ink-text);font-weight:600}
-.tl-mini{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.tl-mini span{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-mut);border:1px solid var(--line-ink);border-radius:3px;padding:3px 8px}
-@media(max-width:680px){
-  .tl-item{grid-template-columns:24px 1fr;gap:0}
-  .tl-date{grid-column:2;grid-row:1;text-align:left;padding:0 0 4px 14px;padding-right:0}
-  .tl-axis{grid-column:1;grid-row:1 / span 2}
-  .tl-card{grid-column:2;padding:0 0 30px 14px}
-  .tl-dot{margin-top:2px}
-  .tl-item:first-child .tl-axis::before{top:12px}
-}
+/* ---------- about ---------- */
+.prose p{font-size:17px;line-height:2;margin:0 0 22px;color:var(--ink-2)}
+.prose p strong{color:var(--ink);font-weight:600}
+.prose .lead{font-size:21px;line-height:1.85;color:var(--ink)}
+.about-grid{display:grid;grid-template-columns:var(--read) 1fr;gap:0}
+.facts{border-left:1px solid var(--rule);padding-left:40px}
+.fact{padding:20px 0;border-bottom:1px solid var(--rule)}
+.fact:last-child{border-bottom:0}
+.fact .fk{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:7px}
+.fact .fv{font-family:var(--sans);font-size:14px;line-height:1.7;color:var(--ink)}
+.fact .fv a{color:var(--red-2);border-bottom:1px solid var(--rule-2)}
+.fact .fv a:hover{border-color:var(--red)}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr}.facts{border-left:0;border-top:1px solid var(--rule);padding-left:0;margin-top:24px}.read{padding:0}}
 
-/* ---------- 写作 ---------- */
-.write-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
-.article{display:flex;flex-direction:column;gap:14px;padding:30px 30px 28px;border:1px solid var(--line-ink);border-radius:12px;background:var(--ink-2);
-  transition:transform .3s,border-color .3s}
-.article:hover{transform:translateY(-4px);border-color:var(--line-ink-strong)}
-.article .src{font-family:var(--font-mono);font-size:11px;color:var(--mint);letter-spacing:.1em}
-.article h3{font-family:var(--font-display);font-size:20px;font-weight:700;line-height:1.35}
-.article p{font-size:13.6px;color:var(--ink-mut);flex:1}
-.article .go{font-family:var(--font-mono);font-size:12.5px;color:var(--mint);display:inline-flex;align-items:center;gap:7px}
-.article .go svg{width:13px;height:13px}
-.write-side{display:flex;flex-direction:column;gap:22px}
-.social-card{border:1px solid var(--line-ink);border-radius:12px;background:var(--ink-2);padding:26px 26px;flex:1;display:flex;flex-direction:column;gap:12px}
-.social-card h4{font-family:var(--font-display);font-size:17px;font-weight:700}
-.social-card p{font-size:13.3px;color:var(--ink-mut);flex:1}
-.social-card a.go{font-family:var(--font-mono);font-size:12.5px;color:var(--mint);display:inline-flex;align-items:center;gap:7px}
-@media(max-width:760px){.write-grid{grid-template-columns:1fr}}
+/* ---------- thinking ---------- */
+.think{background:var(--ink);color:var(--paper);border-radius:2px}
+.think .kicker{color:#d98a72}
+.think .sec-h p{color:#b3ab9c}
+.think .kicker::after{background:rgba(217,138,114,.4)}
+.q-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid rgba(255,255,255,.12)}
+.q{padding:40px 38px;border-bottom:1px solid rgba(255,255,255,.12)}
+.q:nth-child(odd){border-right:1px solid rgba(255,255,255,.12)}
+.q .n{font-family:var(--mono);font-size:11px;color:#8f8776;margin-bottom:16px}
+.q h3{font-size:22px;font-weight:500;line-height:1.4;margin-bottom:12px;color:var(--paper)}
+.q h3 em{font-style:italic;color:#e0a08b}
+.q p{font-family:var(--sans);font-size:13.5px;line-height:1.8;color:#a8a092}
+@media(max-width:720px){.q-grid{grid-template-columns:1fr}.q:nth-child(odd){border-right:0}.q{padding:30px 24px}}
 
-/* ---------- 联系 / 页脚 ---------- */
-.contact{padding:110px 0 90px;text-align:center;background:
-  radial-gradient(700px 360px at 50% 0,rgba(94,234,212,.12),transparent 60%),var(--ink)}
-.contact h2{font-family:var(--font-display);font-weight:700;font-size:clamp(30px,5vw,50px);line-height:1.15;letter-spacing:-.01em}
-.contact h2 .mint{color:var(--mint)}
-.contact p{color:var(--ink-mut);margin:18px auto 34px;max-width:520px;font-size:15.5px}
-.contact-links{display:flex;justify-content:center;flex-wrap:wrap;gap:13px}
-.clink{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:13px;border:1px solid var(--line-ink-strong);
-  border-radius:5px;padding:12px 18px;transition:background .2s,transform .2s,border-color .2s}
-.clink:hover{background:rgba(94,234,212,.1);transform:translateY(-2px)}
-.clink svg{width:15px;height:15px;color:var(--mint)}
-footer{border-top:1px solid var(--line-ink);padding:30px 0;background:var(--ink)}
-.foot-inner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
-  font-family:var(--font-mono);font-size:11.5px;color:var(--ink-faint)}
-.foot-inner a:hover{color:var(--mint)}
+/* ---------- work list ---------- */
+.wlist{border-top:1px solid var(--ink)}
+.wrow{display:grid;grid-template-columns:120px 1fr auto;gap:34px;padding:38px 6px;border-bottom:1px solid var(--rule);align-items:baseline;transition:padding-left .35s,background .35s}
+.wrow:hover{padding-left:16px;background:linear-gradient(90deg,rgba(179,68,43,.05),transparent 60%)}
+.wrow .yr{font-family:var(--mono);font-size:12px;color:var(--mut)}
+.wrow h3{font-size:22px;font-weight:500;line-height:1.4}
+.wrow h3 .en{font-style:italic;color:var(--ink-2);font-weight:400}
+.wrow p{font-family:var(--sans);font-size:14px;color:var(--mut);margin-top:8px;line-height:1.75;max-width:560px}
+.wrow .go{font-family:var(--mono);font-size:12px;color:var(--red-2);white-space:nowrap}
+.wrow .tag{font-family:var(--mono);font-size:10px;color:var(--mut);border:1px solid var(--rule-2);border-radius:100px;padding:3px 11px;margin-left:2px}
+@media(max-width:720px){.wrow{grid-template-columns:1fr;gap:10px;padding:30px 2px}.wrow .go{margin-top:4px}}
 
-/* ---------- 简历悬浮按钮 + 文档层 ---------- */
-.fab-resume{position:fixed;right:26px;bottom:26px;z-index:70;display:flex;align-items:center;gap:10px;
-  background:var(--mint);color:var(--ink);font-weight:700;font-size:14px;padding:14px 20px;border-radius:100px;
-  box-shadow:0 14px 40px -8px rgba(94,234,212,.5);transition:transform .25s,box-shadow .25s}
-.fab-resume:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 20px 50px -8px rgba(94,234,212,.6)}
-.fab-resume svg{width:17px;height:17px}
-.doc-overlay{position:fixed;inset:0;z-index:100;background:rgba(8,13,10,.72);backdrop-filter:blur(6px);
-  display:none;flex-direction:column}
-.doc-overlay.open{display:flex}
-.doc-bar{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--ink-2);border-bottom:1px solid var(--line-ink);flex-wrap:wrap}
-.doc-bar .doc-title{font-family:var(--font-mono);font-size:13px;color:var(--ink-mut);margin-right:auto;display:flex;align-items:center;gap:9px}
-.doc-bar .doc-title .dot{width:7px;height:7px;border-radius:50%;background:var(--mint)}
-.doc-btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:12px;font-weight:600;
-  border:1px solid var(--line-ink-strong);color:var(--ink-text);background:transparent;border-radius:5px;padding:8px 13px;cursor:pointer;
-  transition:background .2s,color .2s}
-.doc-btn:hover{background:var(--mint);color:var(--ink);border-color:var(--mint)}
-.doc-btn svg{width:13px;height:13px}
-.doc-close{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-ink);background:transparent;color:var(--ink-mut);
-  cursor:pointer;display:grid;place-items:center;font-size:17px;line-height:1}
-.doc-close:hover{color:var(--signal);border-color:var(--signal)}
-.doc-scroll{flex:1;overflow:auto;padding:34px 20px 60px;background:rgba(0,0,0,.25)}
-.doc-sheet{max-width:820px;margin:0 auto;background:#fff;color:#1f2329;border-radius:8px;padding:56px 62px;box-shadow:0 40px 120px -30px rgba(0,0,0,.7);
-  font-size:14.5px;line-height:1.75}
-.doc-sheet h1{font-size:27px;margin:0 0 6px;padding-bottom:14px;border-bottom:2px solid #1f2329;font-weight:900}
-.doc-sheet h2{font-size:19px;margin:34px 0 12px;padding-left:11px;border-left:4px solid var(--signal);line-height:1.3;font-weight:800}
-.doc-sheet h3{font-size:15.5px;margin:22px 0 6px;font-weight:700;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
-.doc-sheet h3 .d{font-family:var(--font-mono);font-size:12px;color:#8a919c;font-weight:400;margin-left:auto}
-.doc-sheet p{margin:8px 0;color:#3d434d}
-.doc-sheet ul{margin:8px 0;padding-left:22px}
-.doc-sheet li{margin:5px 0}
-.doc-sheet strong{color:#111418}
-.doc-sheet code{font-family:var(--font-mono);font-size:.88em;background:#f2f0eb;border-radius:4px;padding:1px 6px}
-.doc-sheet a{color:#c2441f;text-decoration:underline;word-break:break-all}
-.doc-sheet hr{border:0;border-top:1px solid #dde0d8;margin:26px 0}
-.doc-sheet blockquote{margin:12px 0;padding:8px 16px;border-left:3px solid #cfd4cb;color:#5b616b;background:#faf9f5}
-.doc-tip{font-family:var(--font-mono);font-size:11.5px;text-align:center;color:var(--ink-faint);margin-top:16px}
-.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);z-index:120;
-  background:var(--mint);color:var(--ink);font-size:13.5px;font-weight:600;padding:11px 20px;border-radius:100px;
-  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;box-shadow:0 12px 34px -8px rgba(94,234,212,.5)}
+/* ---------- day job ---------- */
+.job{display:grid;grid-template-columns:var(--read) 1fr;gap:0}
+.job .lead2{font-size:22px;line-height:1.85;color:var(--ink);margin-bottom:20px}
+.job .lead2 em{font-style:italic;color:var(--red-2)}
+.job-list{border-left:1px solid var(--rule);padding-left:40px}
+.job-item{padding:22px 0;border-bottom:1px solid var(--rule)}
+.job-item:last-child{border-bottom:0}
+.job-item h4{font-family:var(--sans);font-size:15px;font-weight:500;margin-bottom:7px;display:flex;gap:10px;align-items:baseline}
+.job-item h4::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red);flex:0 0 6px;transform:translateY(-3px)}
+.job-item p{font-family:var(--sans);font-size:13.5px;line-height:1.8;color:var(--mut);padding-left:16px}
+@media(max-width:900px){.job{grid-template-columns:1fr}.job-list{border-left:0;border-top:1px solid var(--rule);padding-left:0;margin-top:30px}.job-item p{padding-left:16px}}
+
+/* ---------- career ---------- */
+.career{font-family:var(--sans)}
+.crow{display:grid;grid-template-columns:120px 1fr;gap:30px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.crow:last-child{border-bottom:0}
+.crow .yr{font-family:var(--mono);font-size:12px;color:var(--mut);padding-top:4px}
+.crow h4{font-family:var(--serif);font-size:18px;font-weight:500}
+.crow p{font-size:13.5px;color:var(--mut);margin-top:5px;line-height:1.7;max-width:600px}
+@media(max-width:680px){.crow{grid-template-columns:1fr;gap:6px}}
+
+/* ---------- writing ---------- */
+.arts{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.art{display:grid;grid-template-columns:90px 1fr auto;gap:30px;padding:34px 6px;border-bottom:1px solid var(--rule);align-items:baseline;transition:padding-left .35s}
+.art:hover{padding-left:16px}
+.art .where{font-family:var(--mono);font-size:11px;color:var(--mut)}
+.art h3{font-size:20px;font-weight:500;line-height:1.5}
+.art .arr{font-family:var(--mono);color:var(--red-2);font-size:15px}
+@media(max-width:680px){.art{grid-template-columns:1fr;gap:8px;padding:26px 2px}}
+
+/* ---------- contact ---------- */
+.end{padding:150px 0 90px;text-align:center;border-top:1px solid var(--rule)}
+.end h2{font-weight:400;font-size:clamp(34px,5.6vw,64px);line-height:1.12}
+.end h2 em{font-style:italic;color:var(--red-2)}
+.end .p{margin:26px auto 44px;font-family:var(--sans);font-size:15.5px;color:var(--mut);max-width:460px}
+.end-l{display:flex;justify-content:center;flex-wrap:wrap;gap:14px 12px}
+.ek{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;border:1px solid var(--rule-2);border-radius:100px;padding:12px 22px;transition:border-color .3s,color .3s,transform .3s}
+.ek:hover{border-color:var(--red);color:var(--red-2);transform:translateY(-2px)}
+.ek svg{width:14px;height:14px}
+.end-note{margin-top:56px;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.05em}
+
+/* ---------- footer ---------- */
+footer{padding:34px 0;border-top:1px solid var(--rule)}
+.foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.05em}
+
+/* ---------- resume overlay ---------- */
+.ov{position:fixed;inset:0;z-index:90;background:rgba(32,29,25,.55);backdrop-filter:blur(5px);display:none}
+.ov.open{display:block}
+.sheet-wrap{position:fixed;inset:0;z-index:91;display:none;flex-direction:column}
+.sheet-wrap.open{display:flex}
+.sheet-bar{background:var(--paper);border-bottom:1px solid var(--rule);padding:12px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sheet-bar .t{margin-right:auto;font-family:var(--mono);font-size:12.5px;color:var(--mut);display:flex;align-items:center;gap:9px}
+.sheet-bar .t i{width:7px;height:7px;border-radius:50%;background:var(--red)}
+.sbtn{font-family:var(--mono);font-size:12px;border:1px solid var(--rule-2);background:transparent;color:var(--ink-2);border-radius:100px;padding:8px 16px;cursor:pointer;transition:all .25s}
+.sbtn:hover{border-color:var(--red);color:var(--red-2)}
+.sx{width:34px;height:34px;border-radius:50%;border:1px solid var(--rule-2);background:transparent;color:var(--mut);cursor:pointer;font-size:17px;line-height:1}
+.sx:hover{color:var(--red);border-color:var(--red)}
+.sheet-scroll{flex:1;overflow:auto;background:rgba(32,29,25,.4);padding:46px 22px 80px}
+.doc{max-width:760px;margin:0 auto;background:#fdfbf6;color:#2b2722;border-radius:3px;padding:64px 68px;box-shadow:0 30px 90px -30px rgba(0,0,0,.5);font-family:var(--serif);font-size:15px;line-height:1.85}
+.doc h1{font-size:30px;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
+.doc .meta{font-family:var(--sans);font-size:13px;color:#6f675b;border-bottom:1px solid #ddd5c5;padding-bottom:20px;margin-bottom:8px;line-height:1.9}
+.doc h2{font-size:19px;font-weight:600;margin:38px 0 14px;display:flex;align-items:baseline;gap:12px}
+.doc h2::before{content:"";width:16px;height:2px;background:var(--red);flex:0 0 16px;transform:translateY(-4px)}
+.doc h3{font-size:16px;font-weight:600;margin:26px 0 6px;font-family:var(--serif)}
+.doc h3 .d{font-family:var(--mono);font-size:11.5px;color:#a09684;font-weight:400;margin-left:auto}
+.doc p{margin:9px 0;color:#433d34}
+.doc ul{margin:10px 0;padding-left:22px}
+.doc li{margin:6px 0;color:#433d34}
+.doc strong{color:#201d19;font-weight:600}
+.doc code{font-family:var(--mono);font-size:.86em;background:#f1ece2;padding:1px 6px;border-radius:3px}
+.doc a{color:var(--red-2);border-bottom:1px solid #ddc8bf;word-break:break-all}
+.doc blockquote{margin:14px 0;padding:10px 18px;border-left:2px solid var(--red);background:#f6f1e8;color:#574f44;font-size:14px}
+@media(max-width:640px){.doc{padding:38px 26px}.sheet-scroll{padding:26px 12px 60px}}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(16px);z-index:100;background:var(--ink);color:var(--paper);font-family:var(--sans);font-size:13.5px;padding:12px 22px;border-radius:100px;opacity:0;pointer-events:none;transition:.3s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(max-width:680px){.doc-sheet{padding:34px 24px}.fab-resume span{display:none}.fab-resume{padding:15px;border-radius:50%}.term-foot{padding-right:70px}}
-@media print{
-  body>*:not(.doc-overlay),.grain,.nav,.fab-resume,.ticker{display:none !important}
-  .doc-overlay{position:absolute !important;inset:0 !important;background:#fff !important;display:block !important}
-  .doc-bar,.doc-tip{display:none !important}
-  .doc-scroll{overflow:visible;height:auto;padding:0;background:#fff}
-  .doc-sheet{max-width:100%;border-radius:0;box-shadow:none;padding:0 8mm}
-}
+@media print{body>*:not(.sheet-wrap){display:none!important}.sheet-wrap{position:absolute;inset:0;display:block}.sheet-bar,.ov{display:none!important}.sheet-scroll{overflow:visible;padding:0;background:#fff}.doc{box-shadow:none;border-radius:0;max-width:100%;padding:0 10mm}}
 </style>
 </head>
 <body>
-<div class="grain" aria-hidden="true"></div>
-
-<!-- ===== 视图：导航 ===== -->
+<!-- ===== nav ===== -->
 <nav class="nav" id="nav">
-  <div class="nav-inner">
-    <a class="brand" href="#top">
-      <svg class="loop-mark" viewBox="0 0 32 32" fill="none"><path d="M9 17a7 7 0 0 1 7-7h3a5 5 0 0 1 1.3 9.83A3.8 3.8 0 0 1 19 25h-3a7 7 0 0 1-7-8z" stroke="#5EEAD4" stroke-width="2.2" stroke-linecap="round"/><circle cx="23.5" cy="9.5" r="2.2" fill="#FF5C39"/></svg>
-      钟镇杰<b>.</b>Z
-    </a>
-    <div class="nav-links">
-      <a href="#thesis">主张</a>
-      <a href="#builds">产品</a>
-      <a href="#oss">开源</a>
-      <a href="#impact">成绩</a>
+  <div class="nav-in">
+    <a class="brand" href="#top"><span class="mk"></span>钟镇杰</a>
+    <div class="nav-l">
+      <a href="#think">思考</a>
+      <a href="#build">作品</a>
       <a href="#path">履历</a>
       <a href="#writing">写作</a>
-      <a href="mailto:zzhongzzhen@gmail.com" class="nav-cta">Get in touch</a>
+      <a href="#" id="navResume" class="nav-r" style="color:var(--red-2)">简历 ↓</a>
     </div>
   </div>
 </nav>
 
-<!-- ===== 视图：Hero ===== -->
+<!-- ===== hero ===== -->
 <header class="hero" id="top">
-  <div class="wrap hero-grid">
+  <div class="w hero-grid">
     <div>
-      <div class="hero-tag">
-        <span class="hero-ava"><img src="assets/img/avatar.jpeg" alt="钟镇杰头像"><i></i></span>
-        open to AI PM opportunities · Shenzhen
-      </div>
-      <h1>
-        Zhong Zhenjie
-        <span class="zh">在<span class="mint">人与 Agent</span>的接触面上做产品</span>
-      </h1>
-      <p class="hero-role">剪映 <b>AI 产品经理</b> · ENFP builder。vibe coding 多个 Agent 产品，相信最好的界面是<b>对话与执行分离</b>的 LUI，加上让人舒服消费内容的 <b>GUI</b>。</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#builds">看看我做的产品
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-        <a class="btn btn-ghost" href="https://github.com/JackZhong1998" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
-          GitHub
-        </a>
-      </div>
+      <div class="hero-k">AI Builder · Shenzhen</div>
+      <h1>钟镇杰<br><span class="it">言出法随</span>的<br>产品信徒</h1>
+      <p class="hero-sub">我在人与 <b>Agent</b> 的接触面上做产品。白天在剪映做图片、成片与剪辑 Agent；其余时间，在做 NowBuild.ai 和几个 personal agent。</p>
       <div class="hero-meta">
-        <span class="chip"><em>5y+</em> 产品经验</span>
-        <span class="chip"><em>100+</em> AI 产品深度分析</span>
-        <span class="chip"><em>0→1</em> 多款 C 端 AI 应用</span>
-        <span class="chip"><em>2</em> 开源全栈框架</span>
+        <span><i></i>NowBuild.ai</span>
+        <span><i></i>剪映 Agent PM</span>
+        <span><i></i>ENFP</span>
+        <span><i></i>写故事 · 做电影</span>
       </div>
     </div>
-
-    <div>
-      <div class="terminal" aria-label="agent loop demo">
-        <div class="term-bar"><i></i><i></i><i></i><span class="term-title">agent-loop — zhong@build</span></div>
-        <div class="term-body" id="termBody"></div>
-        <div class="term-foot"><span>status: <span style="color:#7EE0A0">loop running</span></span><span>LUI ↦ dispatch / GUI ↦ consume</span></div>
-      </div>
-    </div>
+    <figure class="portrait">
+      <img src="assets/img/jike-avatar.jpg" alt="钟镇杰（来自即刻）">
+      <figcaption><span>钟镇杰</span><span>photo via 即刻</span></figcaption>
+    </figure>
   </div>
 </header>
 
-<!-- ===== 跑马灯 ===== -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track" id="ticker"></div>
-</div>
-
-<!-- ===== 视图：主张 GUI × LUI ===== -->
-<section class="sec ink" id="thesis">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Thesis · 我的产品主张</span>
-      <h2 class="sec-title">让对话负责下发，让界面负责消费</h2>
-      <p class="sec-sub">这两年在人与 Agent 的接触面上做了大量尝试，总结为一条原则：LUI 与 GUI 各司其职。</p>
-    </div>
-    <div class="thesis-grid">
-      <article class="face face-lui reveal">
-        <span class="face-tag">LUI — LANGUAGE INTERFACE</span>
-        <h3>对话与任务的下发、执行分离</h3>
-        <p>用户只表达意图；Agent 负责拆解、调度与执行，并把过程结构化为用户可管理的对象。</p>
-        <ul>
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12h11M11 7l5 5-5 5"/><path d="M19 5v14"/></svg></span><span>对话层只做意图下发，不把执行日志甩给用户读</span></li>
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span><span>每日 TODO 管理 Agent 进程，也管理用户预期</span></li>
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span>编排 Agent + 多渠道 sub-Agent，围绕 Agent loop 设计 SP / Context / Skill</span></li>
-        </ul>
-      </article>
-      <article class="face face-gui reveal">
-        <span class="face-tag">GUI — GRAPHIC INTERFACE</span>
-        <h3>展示人能更好消费的内容</h3>
-        <p>图形界面不与对话竞争，而是承接 Agent 的产出，让人以最低成本理解、确认与再创作。</p>
-        <ul>
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8 6h7.8M7.6 7.6l8.8 8.8M7 22"/></svg></span><span>语音转成思维导图、TODO、文档，帮用户看见自己的思路</span></li>
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></span><span>画布、封面、数据看板承载创作与复盘，而不是聊天记录</span></li>
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3l2.6 5.6L20 9.4l-4.2 4 1.1 5.6L12 16l-4.9 3 1.1-5.6-4.2-4 5.4-.8z"/></svg></span><span>声音与 IP 人设成为可反复消费的个性化入口</span></li>
-        </ul>
-      </article>
-    </div>
-    <p class="thesis-note reveal"><b>//</b> 这不是两个界面二选一，而是一次任务里的两种语态：说给 Agent 听，看 Agent 给的结果。</p>
+<!-- ===== statement ===== -->
+<section class="stmt">
+  <div class="read">
+    <p class="big reveal">我相信下一代界面不是更多按钮，而是<em>言出法随</em>——<br>你说出口，它就发生。<br><span class="dim">对话负责意图，界面负责呈现你所想的东西。</span></p>
+    <p class="stmt-by reveal">A MANIFESTO, NOT A RESUME</p>
   </div>
 </section>
 
-<!-- ===== 视图：Vibe Coding 产品 ===== -->
-<section class="sec ink" id="builds" style="background:var(--ink-2)">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Vibe Coding · 想法落地</span>
-      <h2 class="sec-title">我做的 Agent 产品</h2>
-      <p class="sec-sub">ENFP 想法很多，所以用 vibe coding 把它们做成真产品，在真实用户身上验证人与 Agent 的协作方式。</p>
-    </div>
-    <div class="prod-grid">
-
-      <article class="prod reveal">
-        <div class="prod-visual pv-1">
-          <img class="pv-svg" src="assets/img/nowbuild-og.png" alt="nowbuild.ai 产品封面" style="width:100%;height:100%;object-fit:cover;opacity:.32">
-          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,24,19,.35),rgba(12,20,16,.88))"></div>
-          <div style="position:relative;text-align:center">
-            <div class="pv-big">NowBuild.ai</div>
-            <div class="pv-en">YOUR 30-DAY AGENT LAUNCH TEAM</div>
-          </div>
-        </div>
-        <div class="prod-body">
-          <div class="prod-head"><h3>营销 Agent Team</h3><span class="idx mono">01</span></div>
-          <p class="prod-desc">一个对话与项目管理 Agent，调度 <b>10+ 渠道 sub-Agent</b>：每日内容生产与发布，每周数据复盘并调整策略。用<b>每日 TODO</b> 同时管理 Agent 的执行进程和用户的预期。</p>
-          <div class="prod-tags"><span>Multi-Agent</span><span>Content Ops</span><span>Daily TODO</span><span>Analytics Loop</span></div>
-          <a class="prod-link" href="https://www.nowbuild.ai" target="_blank" rel="noopener">nowbuild.ai
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-        </div>
-      </article>
-
-      <article class="prod reveal">
-        <div class="prod-visual pv-2">
-          <svg class="pv-svg" viewBox="0 0 400 178" fill="none" preserveAspectRatio="xMidYMid slice">
-            <rect x="246" y="34" width="120" height="110" rx="10" stroke="rgba(94,234,212,.4)" stroke-width="1.5"/>
-            <path d="M266 64h52M266 84h80M266 104h44" stroke="rgba(94,234,212,.55)" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="280" cy="124" r="6" fill="#5EEAD4"/><path d="M280 118v-10M274 112l6-6 6 6" stroke="#5EEAD4" stroke-width="2" stroke-linecap="round"/>
-            <path d="M60 96c0-26 20-46 46-46 22 0 40 14 45 34" stroke="rgba(231,242,236,.35)" stroke-width="1.5" stroke-dasharray="4 5"/>
-            <circle cx="151" cy="88" r="5" fill="#9DB7AA"/>
-          </svg>
-          <div style="position:relative;text-align:center">
-            <div class="pv-big">todoAgent</div>
-            <div class="pv-en">TODOLIST × AGENT</div>
-          </div>
-        </div>
-        <div class="prod-body">
-          <div class="prod-head"><h3>TODO 里的任务 Agent</h3><span class="idx mono">02</span></div>
-          <p class="prod-desc">直接就是 todolist + Agent：在 <b>J 人用户的工作流</b>中调起 AI 下发任务，任务天然继承、复用已有 context，不用每次重新解释背景。</p>
-          <div class="prod-tags"><span>Task Dispatch</span><span>Context Reuse</span><span>Workflow</span></div>
-          <span class="prod-link off">原型验证中 · coming soon</span>
-        </div>
-      </article>
-
-      <article class="prod reveal">
-        <div class="prod-visual pv-3">
-          <svg class="pv-svg" viewBox="0 0 400 178" fill="none" preserveAspectRatio="xMidYMid slice">
-            <path d="M200 40v44M200 84l-44-26M200 84l44-26M200 84l0 44M200 128l-48 18M200 128l48 18" stroke="rgba(255,138,102,.7)" stroke-width="2.4" stroke-linecap="round"/>
-            <circle cx="200" cy="34" r="9" fill="#FF8A66"/><circle cx="150" cy="55" r="7" fill="rgba(255,138,102,.55)"/>
-            <circle cx="250" cy="55" r="7" fill="rgba(255,138,102,.55)"/><circle cx="148" cy="150" r="6" fill="rgba(255,138,102,.5)"/>
-            <circle cx="252" cy="150" r="6" fill="rgba(255,138,102,.5)"/>
-            <path d="M70 120c14-20 40-20 54 0M104 86l-4 8h8z" stroke="rgba(231,242,236,.4)" stroke-width="1.6" stroke-linejoin="round"/>
-          </svg>
-          <div style="position:relative;text-align:center">
-            <div class="pv-big">voicemind</div>
-            <div class="pv-en">VOICE → MIND / TODO / DOC</div>
-          </div>
-        </div>
-        <div class="prod-body">
-          <div class="prod-head"><h3>语音思路梳理器</h3><span class="idx mono">03</span></div>
-          <p class="prod-desc">语音转<b>思维导图、TODO、文档</b>：帮用户梳理思路、展示用户所想，并在语音中直接下发任务。GUI 把口述变成人更好消费的结构化内容。</p>
-          <div class="prod-tags"><span>Voice Input</span><span>Mindmap</span><span>Speech-to-Doc</span></div>
-          <span class="prod-link off">原型验证中 · coming soon</span>
-        </div>
-      </article>
-
-      <article class="prod reveal">
-        <div class="prod-visual pv-4">
-          <svg class="pv-svg" viewBox="0 0 400 178" fill="none" preserveAspectRatio="xMidYMid slice">
-            <rect x="140" y="26" width="120" height="126" rx="16" fill="rgba(94,234,212,.07)" stroke="rgba(94,234,212,.4)" stroke-width="1.5"/>
-            <circle cx="200" cy="76" r="20" fill="none" stroke="#5EEAD4" stroke-width="2.2"/>
-            <path d="M180 122c0-13 9-21 20-21s20 8 20 21" fill="none" stroke="#5EEAD4" stroke-width="2.2"/>
-            <path d="M86 96v-14c0-12 10-22 22-22M314 96v-14c0-12-10-22-22-22" stroke="rgba(231,242,236,.35)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M72 110c-7 0-12-5-12-12s5-12 12-12M328 110c7 0 12-5 12-12s-5-12-12-12" stroke="rgba(231,242,236,.25)" stroke-width="1.8"/>
-          </svg>
-          <div style="position:relative;text-align:center">
-            <div class="pv-big">bewithyou.online</div>
-            <div class="pv-en">VOICE-FIRST PERSONAL AGENT</div>
-          </div>
-        </div>
-        <div class="prod-body">
-          <div class="prod-head"><h3>声音陪伴 Personal Agent</h3><span class="idx mono">04</span></div>
-          <p class="prod-desc">以<b>克隆声音</b>为人与 AI 的接触面，切入声音导向的个人场景：语言学习、同声传译、旅游导游、户外陪伴。已落地英语学习——和 Rosé 聊日常，走进美国旅行英语冒险。</p>
-          <div class="prod-tags"><span>Voice Clone</span><span>Personal Agent</span><span>English Learning</span><span>IP</span></div>
-          <a class="prod-link" href="https://www.bewithyou.online" target="_blank" rel="noopener">bewithyou.online
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- ===== 视图：开源框架 ===== -->
-<section class="sec paper" id="oss">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow en" style="font-family:var(--font-mono)">Open Source · 全栈 SaaS 框架</span>
-      <h2 class="sec-title">把「造轮子」的时间还给产品本身</h2>
-      <p class="sec-sub">面向海外小型 SaaS，开源了两套全栈起步框架：认证、支付、数据库、SEO、多语言全部预置，几天即可上线。</p>
-    </div>
-    <div class="oss-grid">
-      <article class="oss reveal">
-        <img src="assets/img/cloudflare-saas.png" alt="CloudflareSaaS 仓库封面">
-        <div class="oss-body">
-          <h3>JackZhong1998/CloudflareSaaS</h3>
-          <p>可部署在 Cloudflare 免费额度上的全栈 SaaS starter：Clerk 认证、Stripe 计费、OpenRouter AI、D1 数据库，内置中英双语官网、博客、定价与仪表盘。</p>
-          <div class="oss-stack"><span>Next.js 15</span><span>OpenNext</span><span>Clerk</span><span>Stripe</span><span>OpenRouter</span><span>D1 + Drizzle</span><span>next-intl</span></div>
-          <div class="oss-links">
-            <a href="https://github.com/JackZhong1998/CloudflareSaaS" target="_blank" rel="noopener">GitHub ↗</a>
-          </div>
-        </div>
-      </article>
-      <article class="oss reveal">
-        <img src="assets/img/nowbuild-saas-kit.png" alt="nowbuild-saas-kit 仓库封面">
-        <div class="oss-body">
-          <h3>JackZhong1998/nowbuild-saas-kit</h3>
-          <p>开箱即用的 SaaS 全栈脚手架：登录、订阅收费、官网博客、数据分析、SEO、多语言全部集成，Vercel 一键部署，从零搭建的 2–4 周压缩到几天。</p>
-          <div class="oss-stack"><span>Next.js 15</span><span>TypeScript</span><span>Tailwind 4</span><span>Clerk</span><span>Stripe</span><span>Supabase</span><span>GA</span></div>
-          <div class="oss-links">
-            <a href="https://github.com/JackZhong1998/nowbuild-saas-kit" target="_blank" rel="noopener">GitHub ↗</a>
-            <a href="https://www.nowbuild.ai" target="_blank" rel="noopener">NowBuild.ai ↗</a>
-          </div>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 视图：剪映战绩 ===== -->
-<section class="sec impact" id="impact">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Impact @ ByteDance · 剪映</span>
-      <h2 class="sec-title">在剪映，把 AI 能力变成增长</h2>
-      <p class="sec-sub">图片 Web 端核心 PM（0→1），并先后负责字幕、数字人与剪辑 Agent 评测。</p>
-    </div>
-
-    <div class="stat-grid reveal">
-      <div class="stat"><div class="num"><em>+29.6%</em></div><div class="lab">图片场景活跃 DAU<br>164 万 → 212.5 万，目标完成度 105%</div></div>
-      <div class="stat"><div class="num">68<em>%</em></div><div class="lab">图片 Agent 整体采纳率<br>64% → 68%（相对 +6.5%）</div></div>
-      <div class="stat"><div class="num"><em>+280%</em></div><div class="lab">热点 AI 模板产能<br>热点模板导出占比 0.86% → 10.1%</div></div>
-      <div class="stat"><div class="num">¥80<em>万/月</em></div><div class="lab">ASR 成本节约<br>本地化模型覆盖 40%+ 识别流量</div></div>
-    </div>
-
-    <div class="module-grid">
-      <div class="module reveal">
-        <h4>图片 Web × Agent <span class="tag">0→1</span></h4>
-        <ul>
-          <li>冷启动日均新增 <b>1.3 万</b>，实现 MoM DAU <b>+24%</b>、Agent 创作次留 <b>+25%</b></li>
-          <li>推动接入 <b>Seedream 4.3</b>，AB 实验图片 Agent 采纳率 <b>+10%</b></li>
-          <li>多轨封面「智能设计」：图片 Web DAU <b>+2 万</b>，图片导出渗透 <b>+38%</b></li>
-          <li>制定图片模型评测标准，在剪映、醒图广泛引用</li>
-        </ul>
+<!-- ===== about ===== -->
+<section class="sec" id="about">
+  <div class="w about-grid">
+    <div class="read prose" style="padding:0;max-width:620px">
+      <div class="sec-h reveal" style="margin-bottom:40px">
+        <div class="kicker">About · 我是谁</div>
+        <h2>想法比时间多，<br>于是学会了把念头做成产品</h2>
       </div>
-      <div class="module reveal">
-        <h4>剪辑 Agent 评测 <span class="tag">体系</span></h4>
-        <ul>
-          <li>确立承接率 / 满意度全面评测方法，完成首轮评测并推动策略迭代</li>
-          <li>素材理解、检索工具等专项能力评测标准与方法</li>
-          <li>机评迭代：真值对比 + 无真值评测，准确性与可解释性提升</li>
-          <li>云真机自动化链路支持多轮对话、客户端实验命中</li>
-        </ul>
+      <p class="lead reveal">我是 ENFP，享受 0 到 1 本身。写故事、做电影、搭产品，对我来说是同一种冲动。</p>
+      <p class="reveal">这两年我反复在同一件事上较劲：人与 Agent 之间到底该怎么接触。我做过营销 agent team、todolist 里的 agent、语音转思维导图、以克隆声音为入口的陪伴产品。它们指向同一个答案——<strong>对话与任务的下发、执行应该分离</strong>：人只表达意图，agent 负责拆解、调度与执行，再把结果交还给一个人能轻松看懂的界面。</p>
+      <p class="reveal">我不迷信大厂或独立开发的标签。我 vibe coding 能做出完整的产品，几乎具备 0–1 的全部研发能力；也认真学过增长，知道那是另一门更重的功夫。我在意的始终只有一件事：<strong>为一部分人，做出真正有价值的东西</strong>。</p>
+    </div>
+    <aside class="facts reveal">
+      <div class="fact"><div class="fk">Now</div><div class="fv">做 <a href="https://www.nowbuild.ai" target="_blank" rel="noopener">NowBuild.ai</a> —— 营销 Agent Team</div></div>
+      <div class="fact"><div class="fk">Day Job</div><div class="fv">字节跳动 · 剪映 AI 产品经理</div></div>
+      <div class="fact"><div class="fk">Focus</div><div class="fv">Personal Agent · 声音与人设 · Agent Loop</div></div>
+      <div class="fact"><div class="fk">Elsewhere</div><div class="fv"><a href="https://okjk.co/SE5myF" target="_blank" rel="noopener">即刻</a> · <a href="mailto:zzhongzzhen@gmail.com">zzhongzzhen@gmail.com</a></div></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===== thinking ===== -->
+<section class="sec think" id="think">
+  <div class="w">
+    <div class="sec-h reveal">
+      <div class="kicker">Thinking · 最近在想</div>
+      <h2>这些问题，我愿意想一整夜</h2>
+      <p>来自我的即刻。它们不是结论，是我下注的方向。</p>
+    </div>
+    <div class="q-grid reveal">
+      <div class="q">
+        <div class="n">01</div>
+        <h3>打造<em>言出法随</em>的体验，是下一个 AI 应用里程碑</h3>
+        <p>当意图到结果之间的距离趋近于零，产品设计的重心会从"功能入口"转向"意图理解与信任"。</p>
       </div>
-      <div class="module reveal">
-        <h4>字幕 × 数字人 <span class="tag">降本增效</span></h4>
-        <ul>
-          <li>ASR 本地化部署，词错率差异 ≤1%，月省 <b>80 万</b></li>
-          <li>确立 ASR 2.5B 模型演进路线，批量改词降低手动编辑率</li>
-          <li>数字人接入 Seedream 4.0：转化 <b>22%→34%</b>、DAU <b>+44%</b></li>
-          <li>新用户导出 UV 与渗透率均 <b>+5.1%</b>，日均 GMV <b>+28.9%</b></li>
-        </ul>
+      <div class="q">
+        <div class="n">02</div>
+        <h3><em>声音和人设</em>，是个人与 AI 的接触面</h3>
+        <p>一个能被反复消费的 IP 声音，比一个功能更像入口——陪伴、学习、同传、导游都从这里长出来。</p>
+      </div>
+      <div class="q">
+        <div class="n">03</div>
+        <h3>实现 RSI 的标志，是 <em>personal memory 权重化</em></h3>
+        <p>模型记住的不再是聊天记录，而是你这个人的偏好权重——这才是真正属于你的智能。</p>
+      </div>
+      <div class="q">
+        <div class="n">04</div>
+        <h3>用户只跟一个助手说话，<em>底层是一群 worker</em></h3>
+        <p>Super-agent 的 Router + Worker 架构，我早就在 NowBuild 和 todoAgent 里做过一版——我是真用户。</p>
       </div>
     </div>
-    <p class="impact-note reveal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19"/><circle cx="12" cy="12" r="3.2"/></svg>
-      基于对模型能力边界的理解，提出「营销场景主动性创作 Agent」方向，推动 Agent 在 SP、Context、工具调用与描述上与研发对齐，以最简方式敏捷迭代。
-    </p>
   </div>
 </section>
 
-<!-- ===== 视图：履历时间轴 ===== -->
-<section class="sec ink" id="path">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Path · 5 年产品路</span>
-      <h2 class="sec-title">从 SaaS、搜索评测到 AI Native</h2>
+<!-- ===== build ===== -->
+<section class="sec" id="build">
+  <div class="w">
+    <div class="sec-h reveal">
+      <div class="kicker">Build · 我在做的东西</div>
+      <h2>不为融资做的产品，<br>是为了验证一个相信</h2>
     </div>
-    <div class="timeline" id="timeline"></div>
-  </div>
-</section>
-
-<!-- ===== 视图：写作 ===== -->
-<section class="sec ink" id="writing" style="background:var(--ink-2)">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Writing · 深度思考</span>
-      <h2 class="sec-title">把实践沉淀成方法</h2>
-      <p class="sec-sub">关于 Agent 工程，以及人与 LLM 如何真正深度协作。</p>
-    </div>
-    <div class="write-grid">
-      <a class="article reveal" href="https://mp.weixin.qq.com/s/w9wHKlQ7cWqUr1QWaK-q0w" target="_blank" rel="noopener">
-        <span class="src">实践长文 · 微信公众号</span>
-        <h3>Harness 工程的定义和实践</h3>
-        <p>个人编写的实践长文：当模型成为引擎，工程的重心转向承载模型的 Harness——上下文、工具、回路与评估如何被系统性地设计。</p>
-        <span class="go">阅读全文
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+    <div class="wlist reveal">
+      <a class="wrow" href="https://www.nowbuild.ai" target="_blank" rel="noopener">
+        <div class="yr">2026</div>
+        <div>
+          <h3>NowBuild.ai <span class="en">— 营销 Agent Team</span></h3>
+          <p>一个对话与项目管理 agent，调度十几个渠道的 sub-agent：每天生产、发布内容，每周复盘数据、调整策略。用每日 todo 同时管理 agent 的进程和用户的预期。</p>
+        </div>
+        <div class="go">nowbuild.ai ↗</div>
       </a>
-      <div class="write-side">
-        <a class="article reveal" href="https://m.okjike.com/originalPosts/69d68222d58ea614cfd13e50?s=ewoidSI6ICI2NTUxOWYwZjVmMTA3N2YyNDQ0MDY5OTUiCn0=" target="_blank" rel="noopener" style="flex:1">
-          <span class="src">工作法总结 · 即刻</span>
-          <h3 style="font-size:17.5px">人与 LLM 深度协作的 Attention 工作法</h3>
-          <p>劳动使用 LLM 的最佳工作法：如何分配人与模型的注意力，让 AI 成为可复用的生产力而不是一次性的灵感。</p>
-          <span class="go">阅读全文
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        </a>
-        <div class="social-card reveal">
-          <h4>日常的思考在即刻</h4>
-          <p>AI 产品观察、Agent 玩法、vibe coding 进展，持续更新中。</p>
-          <a class="go" href="https://okjk.co/SE5myF" target="_blank" rel="noopener">关注我的即刻 ↗</a>
+      <a class="wrow" href="https://www.bewithyou.online" target="_blank" rel="noopener">
+        <div class="yr">2026</div>
+        <div>
+          <h3>bewithyou.online <span class="en">— 声音陪伴</span></h3>
+          <p>以克隆声音为人与 AI 的接触面，切入语言学习、同声传译、旅游导游、户外陪伴。已经跑通了"和 Rosé 聊日常，走进美国旅行英语冒险"这一个场景。</p>
         </div>
+        <div class="go">bewithyou ↗</div>
+      </a>
+      <div class="wrow" style="cursor:default">
+        <div class="yr">WIP</div>
+        <div>
+          <h3>voicemind <span class="en">— 语音思路梳理</span></h3>
+          <p>把一段语音变成思维导图、todo 和文档：帮用户看见自己刚说出口的思路，并在语音里直接下发任务。GUI 承接口述，把它变成更好消费的结构。</p>
+        </div>
+        <div class="go"><span class="tag">work in progress</span></div>
+      </div>
+      <div class="wrow" style="cursor:default">
+        <div class="yr">WIP</div>
+        <div>
+          <h3>todoAgent <span class="en">— 任务里的 AI</span></h3>
+          <p>todolist 加 agent。在 J 人用户的工作流里调起 AI 下发任务，任务天然继承已有的上下文，不用每次从头解释一遍背景。</p>
+        </div>
+        <div class="go"><span class="tag">work in progress</span></div>
+      </div>
+    </div>
+    <p class="mono reveal" style="margin-top:24px;font-size:12.5px;color:var(--mut)">另外开源过两套面向海外的全栈 SaaS 脚手架——认证、支付、数据库、SEO 全部预置，想做小生意的人可以少走几周弯路。需要的话，随时找我要。</p>
+  </div>
+</section>
+
+<!-- ===== day job ===== -->
+<section class="sec" style="background:var(--paper-2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)">
+  <div class="w job">
+    <div style="padding:0;max-width:620px">
+      <div class="sec-h reveal" style="margin-bottom:34px">
+        <div class="kicker">Day Job · 剪映</div>
+        <h2>把前沿模型，<br>变成每天在用的功能</h2>
+      </div>
+      <p class="lead2 reveal">在剪映，我做图片、成片与剪辑方向的 <em>AI 产品经理</em>：从产品 0 到 1，到模型评测、成本结构与体验细节。</p>
+    </div>
+    <div class="job-list reveal">
+      <div class="job-item">
+        <h4>图片 Agent 与 AI 设计</h4>
+        <p>一款面向商业设计的 AI 产品，从 0 到 1 冷启动并贯穿全生命周期；推动多代生图模型敏捷接入与评测，让活跃、采纳与留存都站上了新的台阶。</p>
+      </div>
+      <div class="job-item">
+        <h4>剪辑 Agent 评测体系</h4>
+        <p>搭起一套覆盖承接、满意度与专项能力的评测方法和自动化链路，让复杂 agent 系统的每一次策略迭代，都有可对照的事实依据。</p>
+      </div>
+      <div class="job-item">
+        <h4>字幕 × 数字人</h4>
+        <p>一边把识别模型做得更准、把成本结构性地降下来；一边确立「真实感数字人」的内容方向，带动转化、采纳与内容增长。</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 视图：联系 ===== -->
-<section class="contact" id="contact">
-  <div class="wrap">
-    <h2 class="reveal">让我们聊聊 <span class="mint">Agent 的下一种界面</span></h2>
-    <p class="reveal">正在寻找 AI 产品经理机会，也欢迎一起 vibe coding、交流 Agent loop 与全栈 SaaS。</p>
-    <div class="contact-links reveal">
-      <a class="clink" href="mailto:zzhongzzhen@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>zzhongzzhen@gmail.com</a>
-      <a class="clink" href="https://github.com/JackZhong1998" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>github.com/JackZhong1998</a>
-      <a class="clink" href="https://okjk.co/SE5myF" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.3 8.9 8.9 0 0 1-4-1L3 20l1.3-3.8A7.9 7.9 0 0 1 3 11.5 8.4 8.4 0 0 1 11.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>即刻 @钟镇杰</a>
+<!-- ===== path ===== -->
+<section class="sec" id="path">
+  <div class="w">
+    <div class="sec-h reveal">
+      <div class="kicker">Path · 走过的路</div>
+      <h2>从 SaaS、搜索评测，到 AI Native</h2>
     </div>
+    <div class="career read reveal" style="padding:0;max-width:760px">
+      <div class="crow"><div class="yr">NOW</div><div><h4>字节跳动 · 剪映 AI 产品经理</h4><p>图片 / 成片 / 剪辑 Agent，图片 Web 端 0→1。</p></div></div>
+      <div class="crow"><div class="yr">2024–25</div><div><h4>智焰科技 · 产品负责人</h4><p>海外 C 端 AI：互动小说与漫画、角色扮演、情感陪伴。从市场切入到 MVP 冷启动与增长。</p></div></div>
+      <div class="crow"><div class="yr">2023–24</div><div><h4>倍趣网络 · AI 产品经理</h4><p>海外角色扮演 / 情感陪伴 / AI 游戏，Multi-Agent 交互、声音克隆、长期记忆与 AI 硬件探索。</p></div></div>
+      <div class="crow"><div class="yr">EARLIER</div><div><h4>LLM/ASR · 私域 SaaS · 搜索评测 · 低代码</h4><p>在大模型落地、影楼行业数字化（种子轮）、微信搜一搜算法评测与企业低代码平台上各待过一段，一路走向 AI。</p></div></div>
+      <div class="crow"><div class="yr">2017–21</div><div><h4>广东药科大学 · 电子商务</h4><p>市场、商科与代码交叉的起点。</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== writing ===== -->
+<section class="sec" id="writing" style="background:var(--paper-2);border-top:1px solid var(--rule)">
+  <div class="w">
+    <div class="sec-h reveal">
+      <div class="kicker">Writing · 把实践写成方法</div>
+      <h2>做过的事，<br>值得被认真讲清楚</h2>
+    </div>
+    <div class="arts reveal">
+      <a class="art" href="https://mp.weixin.qq.com/s/w9wHKlQ7cWqUr1QWaK-q0w" target="_blank" rel="noopener">
+        <div class="where">长文 · 微信</div>
+        <h3>Harness 工程的定义和实践</h3>
+        <div class="arr">↗</div>
+      </a>
+      <a class="art" href="https://m.okjike.com/originalPosts/69d68222d58ea614cfd13e50" target="_blank" rel="noopener">
+        <div class="where">工作法 · 即刻</div>
+        <h3>人与 LLM 深度协作的 Attention 工作法</h3>
+        <div class="arr">↗</div>
+      </a>
+      <a class="art" href="https://okjk.co/SE5myF" target="_blank" rel="noopener">
+        <div class="where">日常 · 即刻</div>
+        <h3>更多还热乎的想法，都在即刻</h3>
+        <div class="arr">↗</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== end ===== -->
+<section class="end">
+  <div class="read">
+    <h2 class="reveal">说点什么，<br><em>或者一起做点什么</em></h2>
+    <p class="p reveal">想聊 personal agent、agent loop、独立产品，或者你脑子里刚好有个念头想验证——都欢迎。</p>
+    <div class="end-l reveal">
+      <a class="ek" href="mailto:zzhongzzhen@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>Email</a>
+      <a class="ek" href="https://okjk.co/SE5myF" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.3 8.9 8.9 0 0 1-4-1L3 20l1.3-3.8A7.9 7.9 0 0 1 3 11.5 8.4 8.4 0 0 1 11.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>即刻</a>
+      <a class="ek" href="https://github.com/JackZhong1998" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>GitHub</a>
+      <button class="ek" id="endResume" style="font-family:var(--mono)">阅读完整简历 ↓</button>
+    </div>
+    <p class="end-note">BUILT BY A HUMAN AND HIS AGENTS · 2026</p>
   </div>
 </section>
 
 <footer>
-  <div class="wrap foot-inner">
-    <span>© 2026 Zhong Zhenjie · Built by human &amp; agents</span>
-    <span>LUI ↦ dispatch &nbsp;·&nbsp; GUI ↦ consume</span>
-    <a href="#top">Back to top ↑</a>
+  <div class="w foot">
+    <span>钟镇杰 · ZHONG ZHENJIE</span>
+    <span>SAY IT, AND IT HAPPENS.</span>
   </div>
 </footer>
 
-<!-- ===== 简历文档层（MD 渲染 / 复制 / 下载 / 打印） ===== -->
-<button class="fab-resume" id="fabResume" aria-label="查看格式化简历">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6M9 9h1"/></svg>
-  <span>简历 · MD</span>
-</button>
-
-<div class="doc-overlay" id="docOverlay" role="dialog" aria-modal="true" aria-label="格式化简历">
-  <div class="doc-bar">
-    <span class="doc-title"><span class="dot"></span>钟镇杰 · AI 产品经理 — 格式化简历</span>
-    <button class="doc-btn" id="btnCopy">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-      复制 Markdown
-    </button>
-    <button class="doc-btn" id="btnDownload">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
-      下载 .md
-    </button>
-    <button class="doc-btn" id="btnPrint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>
-      打印 / 存 PDF
-    </button>
-    <button class="doc-close" id="docClose" aria-label="关闭">×</button>
+<!-- ===== resume sheet ===== -->
+<div class="ov" id="ov"></div>
+<div class="sheet-wrap" id="sheet" role="dialog" aria-modal="true" aria-label="简历">
+  <div class="sheet-bar">
+    <span class="t"><i></i>钟镇杰 — 简历（Markdown）</span>
+    <button class="sbtn" id="btnCopy">复制 MD</button>
+    <button class="sbtn" id="btnDl">下载 .md</button>
+    <button class="sbtn" id="btnPrint">打印 / PDF</button>
+    <button class="sx" id="btnClose" aria-label="关闭">×</button>
   </div>
-  <div class="doc-scroll" id="docScroll">
-    <article class="doc-sheet" id="docSheet"></article>
-    <p class="doc-tip">内容为结构化 Markdown 单一数据源 · 可一键复制、下载，或在浏览器中打印为 PDF</p>
+  <div class="sheet-scroll">
+    <article class="doc" id="doc"></article>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
-<!-- ANCHOR_MAIN -->
 <script>
-/* ============================================================
-   1) Hero 终端：逐行呈现「意图下发 → 调度执行 → GUI 消费」
-   ============================================================ */
+/* ---------- nav state ---------- */
+var nav=document.getElementById('nav');
+addEventListener('scroll',function(){nav.classList.toggle('on',scrollY>24)},{passive:true});
+
+/* ---------- reveal ---------- */
 (function(){
-  var lines = [
-    '<span class="c"># 用户只下发意图，Agent 拆解、调度并执行</span>',
-    '<span class="k">you</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="o">›</span> 把这篇内容发到 10 个渠道，每天帮我复盘数据',
-    '<span class="k">orchestrator</span> <span class="o">›</span> <span class="ok">✓</span> 拆成 12 个子任务 · 写入每日 todo',
-    '<span class="k">sub-agent</span>&nbsp;&nbsp; <span class="o">›</span> twitter · reddit · wechat… <span class="ok">scheduled</span>',
-    '<span class="k">sub-agent</span>&nbsp;&nbsp; <span class="o">›</span> 封面已生成（Seedream 4.3）<span class="ok"> done</span>',
-    '<span class="k">weekly</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="o">›</span> 数据回收 → 策略调整建议 <span class="v">2 条</span>',
-    '<span class="c"># GUI：在可视化界面消费成果，而不是读执行日志</span>',
-    '<span class="k">you</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="o">›</span> <span class="caret"></span>'
-  ];
-  var box = document.getElementById('termBody');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduce){
-    box.innerHTML = lines.map(function(l){return '<div class="tline">'+l+'</div>';}).join('');
-    return;
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){
+    els.forEach(function(e){e.classList.add('in')});return;
   }
-  lines.forEach(function(html, i){
-    setTimeout(function(){
-      var d = document.createElement('div');
-      d.className = 'tline'; d.innerHTML = html;
-      d.style.opacity = '0'; d.style.transform = 'translateY(4px)';
-      d.style.transition = 'opacity .3s, transform .3s';
-      box.appendChild(d);
-      requestAnimationFrame(function(){
-        requestAnimationFrame(function(){ d.style.opacity='1'; d.style.transform='none'; });
-      });
-    }, 350 + i*720);
-  });
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12,rootMargin:'0px 0px -4% 0px'});
+  els.forEach(function(e){io.observe(e)});
 })();
 
-/* ============================================================
-   2) 跑马灯（内容复制两份，无缝滚动）
-   ============================================================ */
-(function(){
-  var items=['Agent Loop','Prompt / Context / Skill','Multi-Agent Orchestration','GUI × LUI','Seedream 4.3','RAG · Memory','ASR · Voice Clone','模型评测体系','vibe coding','Attention 工作法','Harness Engineering','Stripe · Clerk · D1'];
-  var html = items.map(function(s){return '<span>'+s+'</span>';}).join('');
-  document.getElementById('ticker').innerHTML = html + html;
-})();
-
-/* ============================================================
-   3) 顶栏状态 + 滚动揭示
-   ============================================================ */
-window.addEventListener('scroll',function(){
-  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20);
-},{passive:true});
-
-(function(){
-  var els = document.querySelectorAll('.reveal');
-  if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    els.forEach(function(el){el.classList.add('in');}); return;
-  }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  },{threshold:.12, rootMargin:'0px 0px -6% 0px'});
-  els.forEach(function(el){io.observe(el);});
-})();
-
-/* ============================================================
-   4) 履历时间轴
-   ============================================================ */
-(function(){
-  var data = [
-    {d:'2025.06 – 至今', hot:true, t:'字节跳动 · 剪映 AI 产品经理',
-     org:'图片 Web 端核心 PM（0→1）· 剪辑 Agent 评测 · 字幕 · 数字人',
-     p:'聚焦「AI Agent + 商业图片设计」，图片场景 DAU <b>+29.6%</b>（164 万→212.5 万），图片 Agent 采纳率 64%→<b>68%</b>；搭建剪辑 Agent 全面评测体系；ASR 本地化月省 <b>80 万</b>；数字人转化 22%→<b>34%</b>。',
-     tags:['AI Agent','Seedream 4.3','ASR','评测体系','0→1']},
-    {d:'2024.07 – 2025.02', t:'广州智焰科技 · 产品负责人',
-     org:'海外 C 端 AI：角色扮演 / 互动小说&漫画 / 语C / 陪伴',
-     p:'完成市场与竞品分析，定义多模态 AI 互动平台并落地互动漫画&小说 MVP；首次互动人均 <b>80 轮 / 约 1.5h</b>，次留 <b>80%</b>；构建毛利 70% 的盈利模型，注册成本降至 <b>$2.89</b>。',
-     tags:['0→1','LLM 选型评测','GTM','团队管理']},
-    {d:'2024.05 – 2024.07', t:'广州欢乐童年科技 · 产品经理',
-     org:'LLM / ASR 能力落地',
-     p:'负责 LLM 模型评测与选型、模型 API 接入、提示词工程；语音数据分析与 ASR 模型选型评测。',
-     tags:['LLM','ASR','Prompt']},
-    {d:'2023.11 – 2024.04', t:'广州倍趣网络 · AI 产品经理',
-     org:'海外 C 端 AI：角色扮演 / 情感陪伴 / AI 游戏',
-     p:'设计 Multi-Agent 游戏化交互，接入语音与声音克隆；用外挂式 RAG 做长期记忆，打通 LLM 工具使用能力，<b>使用时长、次留翻倍</b>；探索智能音响、桌面陪伴机器人等 AI 硬件。',
-     tags:['Multi-Agent','RAG 记忆','Voice Clone','AI 硬件']},
-    {d:'2022.06 – 2023.05', t:'广州迅捷微风 · 产品经理',
-     org:'影楼行业数字化 · 私域获客 SaaS（种子轮 500 万）',
-     p:'0→1 搭建涵盖会员积分、CRM、ERP、CMS、RPA 的私域获客系统；客户私域获客能力 <b>提升 2 倍</b>，持续运营成本 <b>降低 50%</b>。',
-     tags:['SaaS','CRM/ERP','RPA','客户成功']},
-    {d:'2022.03 – 2022.06', t:'金证科技 · 微信搜一搜策略产品助理',
-     org:'搜索算法评测',
-     p:'实施 Query 分析、召回结果评测与竞品能力评估，标注评估 <b>3000+</b> 返回结果，参与制定搜索模型能力评估标准。',
-     tags:['搜索评测','评估标准']},
-    {d:'2021.06 – 2022.03', t:'广东道一信息 · 产品专员',
-     org:'低代码 / 表单工具',
-     p:'独立负责国家电网表单工具需求采集与设计；推进低代码平台私有化定制落地苏州银行。',
-     tags:['低代码','需求管理']},
-    {d:'2017 – 2021', t:'广东药科大学 · 本科',
-     org:'电子商务',
-     p:'主修：电商概论、市场营销、商务英语、工商管理、计算机网络、Java、JS、算法概论等。',
-     tags:['本科']}
-  ];
-  var box = document.getElementById('timeline');
-  box.innerHTML = data.map(function(n){
-    return '<div class="tl-item'+(n.hot?' hot':'')+'">'
-      + '<div class="tl-date">'+n.d+'</div>'
-      + '<div class="tl-axis"><span class="tl-dot"></span></div>'
-      + '<div class="tl-card"><h3>'+n.t+'</h3><div class="org">'+n.org+'</div><p>'+n.p+'</p>'
-      + '<div class="tl-mini">'+n.tags.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div></div>'
-      + '</div>';
-  }).join('');
-})();
-
-/* ============================================================
-   5) 简历：Markdown 单一数据源 + 极简渲染 + 复制/下载/打印
-   ============================================================ */
-var RESUME_MD = [
-'# 钟镇杰 · AI 产品经理',
+/* ---------- resume markdown（重点版，敏感数据已隐性表达） ---------- */
+var MD=[
+'# 钟镇杰',
+'**AI 产品经理 · AI Builder** ｜ 深圳',
+'电话 15362929635 ｜ zzhongzzhen@gmail.com',
+'即刻 https://okjk.co/SE5myF ｜ GitHub https://github.com/JackZhong1998',
 '',
-'> 男 · 28 岁 · 深圳 ｜ 电话：15362929635 ｜ 邮箱：zzhongzzhen@gmail.com',
-'> 5 年产品经验 ｜ 求职意向：AI 产品经理（C 端 / Agent 方向）',
-'> GitHub：https://github.com/JackZhong1998 ｜ 即刻：https://okjk.co/SE5myF',
+'> 在人与 Agent 的接触面上做产品。我相信下一代界面是「言出法随」：对话负责意图下发与任务调度，图形界面负责呈现人能轻松消费的结果。',
 '',
-'## 个人主张',
+'## 我能带来什么',
 '',
-'在人与 Agent 的接触面上做产品：**LUI 上让对话与任务的下发、执行分离**，用户只表达意图，Agent 拆解、调度、执行，并以 TODO 管理进程与预期；**GUI 上展示人能更好消费的内容**，用画布、思维导图、数据看板承接 Agent 的产出。',
+'- **Agent 产品 0→1**：熟悉文 / 图 / 视频 / 语音多模态模型的能力边界与选型评测，理解 Agent Loop 中的 System Prompt、Context、Skill 与工具设计；有多款 C 端 AI 产品从市场切入到上线增长的完整经验。',
+'- **自己就是真用户、能独立 build**：熟练用 Cursor 等工具 vibe coding，独立完成过多个含前后端的完整 AI 产品和全栈 SaaS 脚手架；深度分析过各赛道 100+ AI 产品。',
+'- **增长与评测双闭环**：做过百万 DAU 量级产品的 0→1 冷启动与双位数增长，也从零搭过复杂 Agent 的评测体系，习惯用数据和可复现的评测驱动模型与策略迭代。',
 '',
-'## 个人优势',
-'',
-'- 掌握文、图、视频、声学等多模态 AI 模型的能力边界、特点与 API 调用，熟悉开源模型生态、推理框架与推理平台。',
-'- 多段 C 端 AI 产品 0-1 落地经验：AI 陪伴、互动漫画、视频生成工具；熟练使用 Cursor，借助 Dify、OpenRouter 搭建产品 Demo（浏览器插件、单词提取器、单词播客等）。',
-'- 掌握 PM 与 AI 的协作分工：用 Todo + ChatGPT 覆盖头脑风暴、功能规划、需求分析等 80% 文本工作，用 Manus / Claude + MCP 完成竞品分析与市场调研。',
-'- 持续跟踪技术与市场动态，深度分析过各赛道头部 100+ AI 产品，具备模型选型评测与快速搭建、验证 PMF 的经验。',
-'',
-'## 核心经历',
+'## 工作经历',
 '',
 '### 字节跳动 · 剪映 AI 产品经理（2025.06 – 至今）',
 '',
-'**剪映图片 Web 端核心 PM（0→1）**：负责「AI Agent + 商业图片设计」产品冷启动、市场切入与全生命周期迭代。',
-'',
-'- 图片场景活跃 DAU 从 **164 万增长至 212.5 万（+29.6%）**，目标完成度 105%。',
-'- 推动图片 Agent 接入 Seedream 4.3，AB 实验整体采纳率 +10%，采纳率由 64% 提升至 **68%（相对 +6.5%）**。',
-'- 多轨封面编辑上线「智能设计」：图片 Web 活跃 DAU +2 万，图片导出渗透 **+38%**。',
-'- 搭建图片热点 AI 复刻链路：热点模板产能 **+280%**，热点模板导出占比 0.86% → **10.1%**；生产力复刻链路预计一次性带来 10W+ 模板。',
-'- 冷启动阶段日均新增 1.3 万；MoM DAU +24%、次留 +25%，Agent 创作场景次留 +25.25%。',
-'- 制定图片模型评测标准与方法，在剪映、醒图等业务被广泛引用。',
-'',
-'**剪辑 Agent 评测体系**：确立承接率、满意度全面评测方法；制定素材理解、检索工具等专项评测标准；完善真值/无真值机评、草稿自动填充与云真机多轮对话自动化链路，推动策略迭代。',
-'',
-'**字幕模块**：推动 ASR 本地化模型部署，词错率差异 ≤1%，覆盖 PC/移动端 40%+ 识别流量，**月省成本约 80 万元**；确立 ASR 2.5B 模型演进路线；上线批量改词降低手动编辑率。',
-'',
-'**数字人模块**：确立「真实感数字人」方向；接入 Seedream 4.0，图片数字人转化率 **22% → 34%**、采纳率 +8.68%、DAU +44%；新用户导出 UV 与渗透率均 +5.1%，日均 GMV +28.9%。',
+'- **图片 AI 产品（核心 PM，0→1）**：聚焦「AI Agent + 商业图片设计」，负责冷启动、市场切入与全生命周期迭代；活跃规模在一年内增长约三成、进入百万 DAU 量级并超额完成目标，新用户次留实现双位数提升。',
+'- 推动图片 Agent 接入新一代生图模型，并建立图片模型评测标准（在剪映、醒图等业务复用），图片 Agent 采纳率提升至接近七成。',
+'- 打通视频封面智能设计、搭建热点内容 AI 复刻链路，使相关模板产能提升近三倍；建立剪辑 Agent 承接率 / 满意度与专项能力评测体系及自动化评测链路。',
+'- **字幕**：推动 ASR 本地化落地，在识别效果无损的前提下覆盖四成以上流量，结构性降低该模块成本（年省百万级），并确立下一代小模型演进路线。',
+'- **数字人**：确立「真实感数字人」内容方向，推动生图模型升级，形象转化率提升约五成，带动采纳、活跃与付费同步增长。',
 '',
 '### 广州智焰科技 · 产品负责人（2024.07 – 2025.02）',
 '',
-'海外 C 端 AI 产品（角色扮演 / 互动小说&漫画 / 语C / 陪伴）：基于 Reddit、X、AO3、Pixiv 调研切入北美 18-25 岁人群；完成差异化产品定义与 LLM 选型评测，落地互动漫画&小说 MVP 并冷启动；首次互动人均约 80 轮 / 1.5h，次留 80%、7 留 10%；构建毛利 70%、首付费 3-5% 的盈利模型，注册成本降至 $2.89。',
-'',
-'### 广州欢乐童年科技 · 产品经理（2024.05 – 2024.07）',
-'',
-'- LLM 模型评测、选型与 API 接入；提示词工程；语音数据分析、ASR 模型选型与评测。',
+'海外 C 端 AI（互动小说 / 漫画、角色扮演、情感陪伴）：基于北美社区调研完成市场切入与产品定义，主导 LLM 选型与 AI 工作流搭建，落地互动漫画 & 小说 MVP 并完成冷启动；负责定价、GTM 与增长，产品呈现出高粘性的首轮互动深度与留存。',
 '',
 '### 广州倍趣网络 · AI 产品经理（2023.11 – 2024.04）',
 '',
-'海外 C 端 AI（角色扮演 / 情感陪伴 / AI 游戏）：',
-'- 设计文字 AVG、GALGame、角色养成等游戏化交互，构建 Multi-Agent Prompt 架构，接入语音与声音克隆。',
-'- 用外挂式 RAG 实现长期记忆，打造 LLM 工具使用能力；探索智能音响、桌面陪伴机器人等 AI 硬件与实时语音交互。',
-'- 建立评测标准与数据集，推动算法二次微调；使用时长、次留翻倍。',
+'海外角色扮演 / 情感陪伴 / AI 游戏：设计 Multi-Agent 游戏化交互，接入语音与声音克隆；以 RAG 实现长期记忆，探索 AI 硬件与实时语音交互；推动模型评测与微调，使用时长与次留翻倍。',
 '',
-'### 广州迅捷微风 · 产品经理（2022.06 – 2023.05）',
+'### 更早',
 '',
-'影楼行业数字化（种子轮融资 500 万）：0-1 搭建私域获客 SaaS（会员积分、CRM、ERP、CMS、RPA）；客户私域获客能力提升 2 倍，持续运营成本降低 50%。',
+'- 广州欢乐童年（2024.05 – 07）：LLM / ASR 选型评测与提示词工程。',
+'- 广州迅捷微风（2022.06 – 2023.05）：影楼行业私域获客 SaaS（种子轮），0→1 搭建 CRM / ERP / RPA 体系，客户获客效率翻倍、运营成本减半。',
+'- 金证科技（2022.03 – 06）：微信搜一搜搜索算法评测，评估 3000+ 返回结果，参与制定评估标准。',
+'- 广东道一（2021.06 – 2022.03）：企业低代码平台需求管理与私有化交付。',
 '',
-'### 深圳市金证科技 · 微信搜一搜策略产品助理（2022.03 – 2022.06）',
+'## 个人产品（Vibe Coding）',
 '',
-'- 负责搜索算法评测、Query 分析、召回结果评测与竞品评估，标注评估 3000+ 返回结果；参与制定搜索模型能力评估标准。',
-'',
-'### 广东道一信息技术 · 产品专员（2021.06 – 2022.03）',
-'',
-'- 独立负责国家电网表单工具需求采集、功能规划与设计；推进低代码平台私有化定制落地苏州银行。',
-'',
-'## 个人项目（Vibe Coding）',
-'',
-'- **nowbuild.ai**：营销 Agent Team，对话+项目管理 Agent 调度 10+ 渠道 sub-Agent，每日内容生产发布、每周数据复盘与策略调整，用每日 TODO 管理 Agent 进程与用户预期。https://www.nowbuild.ai',
-'- **todoAgent**：todolist + Agent，在 J 人用户工作流中调起 AI 下发任务，自然继承与复用 context。',
-'- **voicemind**：语音转思维导图 / TODO / 文档，帮用户梳理思路并在语音中下发任务。',
-'- **bewithyou.online**：以克隆声音为人与 AI 的接触面，切入语言学习、同声传译、旅游导游、户外陪伴等声音导向场景；已落地英语学习。https://www.bewithyou.online',
-'',
-'## 开源项目',
-'',
-'- **CloudflareSaaS**：可部署于 Cloudflare 免费额度的全栈 SaaS starter（Clerk + Stripe + OpenRouter + D1，Next.js 15 + OpenNext，中英双语）。https://github.com/JackZhong1998/CloudflareSaaS',
-'- **nowbuild-saas-kit**：开箱即用的 SaaS 全栈脚手架（Clerk / Stripe / Supabase / GA / SEO / 多语言，Vercel 一键部署）。https://github.com/JackZhong1998/nowbuild-saas-kit',
+'- **NowBuild.ai**：营销 Agent Team，一个编排 Agent 调度十余个渠道 sub-Agent，每日内容生产发布、每周数据复盘，用每日 todo 管理 Agent 进程与用户预期。https://www.nowbuild.ai',
+'- **bewithyou.online**：以克隆声音为人与 AI 的接触面，已落地「AI 角色旅行英语学习」场景，面向语言学习、同声传译、旅游导游、户外陪伴等声音导向场景。https://www.bewithyou.online',
+'- **voicemind（开发中）**：语音转思维导图 / TODO / 文档，帮用户梳理思路并在语音中下发任务。',
+'- **todoAgent（开发中）**：嵌入 todolist 工作流的任务 Agent，任务天然继承已有上下文。',
+'- 另开源两套全栈 SaaS 脚手架（认证 / 支付 / 数据库 / SEO / 多语言预置），见 GitHub 主页。',
 '',
 '## 写作',
 '',
-'- 《Harness 工程的定义和实践》：https://mp.weixin.qq.com/s/w9wHKlQ7cWqUr1QWaK-q0w',
-'- 《人与 LLM 深度协作的 Attention 工作法》：https://m.okjike.com/originalPosts/69d68222d58ea614cfd13e50',
+'- 《Harness 工程的定义和实践》 https://mp.weixin.qq.com/s/w9wHKlQ7cWqUr1QWaK-q0w',
+'- 《人与 LLM 深度协作的 Attention 工作法》 https://m.okjike.com/originalPosts/69d68222d58ea614cfd13e50',
 '',
-'## 教育背景',
+'## 教育',
 '',
-'**广东药科大学** · 本科 · 电子商务（2017 – 2021）。主修：电商概论、市场营销、商务英语、工商管理、计算机网络、Java、JS、算法概论等。'
+'广东药科大学 · 电子商务 · 本科（2017 – 2021）。'
 ].join('\n');
 
-function escapeHtml(s){
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-function renderInline(s){
-  s = escapeHtml(s);
-  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener">$1</a>');
-  s = s.replace(/(^|[\s(：|])(https?:\/\/[^\s<，。、）)]+)/g,
-    '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function inline(s){
+  s=esc(s);
+  s=s.replace(/`([^`]+)`/g,'<code>$1</code>');
+  s=s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/(^|[\s(：|])(https?:\/\/[^\s<，。、）)]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>');
   return s;
 }
-function renderMarkdown(md){
-  var lines = md.split('\n'), html = [], i = 0, listOpen = false, para = [];
-  function flushPara(){
-    if(para.length){ html.push('<p>'+renderInline(para.join('<br>'))+'</p>'); para = []; }
-  }
-  function closeList(){ if(listOpen){ html.push('</ul>'); listOpen = false; } }
-  for(; i<lines.length; i++){
-    var line = lines[i];
-    if(!line.trim()){ flushPara(); closeList(); continue; }
+function render(md){
+  var out=[],ul=false,para=[];
+  function fp(){if(para.length){out.push('<p>'+para.map(inline).join('<br>')+'</p>');para=[];}}
+  function cl(){if(ul){out.push('</ul>');ul=false;}}
+  md.split('\n').forEach(function(L){
     var m;
-    if(m = line.match(/^###\s+(.*)$/)){ flushPara(); closeList(); html.push('<h3>'+renderInline(m[1])+'</h3>'); }
-    else if(m = line.match(/^##\s+(.*)$/)){ flushPara(); closeList(); html.push('<h2>'+renderInline(m[1])+'</h2>'); }
-    else if(m = line.match(/^#\s+(.*)$/)){ flushPara(); closeList(); html.push('<h1>'+renderInline(m[1])+'</h1>'); }
-    else if(/^---+$/.test(line.trim())){ flushPara(); closeList(); html.push('<hr>'); }
-    else if(m = line.match(/^>\s?(.*)$/)){ flushPara(); closeList(); html.push('<blockquote>'+renderInline(m[1])+'</blockquote>'); }
-    else if(m = line.match(/^-\s+(.*)$/)){ flushPara(); if(!listOpen){ html.push('<ul>'); listOpen = true; } html.push('<li>'+renderInline(m[1])+'</li>'); }
-    else { closeList(); para.push(line.trim()); }
-  }
-  flushPara(); closeList();
-  return html.join('\n');
+    if(!L.trim()){fp();cl();return;}
+    if(m=L.match(/^###\s+(.*)$/)){fp();cl();out.push('<h3>'+inline(m[1])+'</h3>');}
+    else if(m=L.match(/^##\s+(.*)$/)){fp();cl();out.push('<h2>'+inline(m[1])+'</h2>');}
+    else if(m=L.match(/^#\s+(.*)$/)){fp();cl();out.push('<h1>'+inline(m[1])+'</h1>');}
+    else if(m=L.match(/^>\s?(.*)$/)){fp();cl();out.push('<blockquote>'+inline(m[1])+'</blockquote>');}
+    else if(m=L.match(/^-\s+(.*)$/)){fp();if(!ul){out.push('<ul>');ul=true;}out.push('<li>'+inline(m[1])+'</li>');}
+    else{cl();para.push(L.trim());}
+  });
+  fp();cl();
+  return out.join('\n');
 }
 
 (function(){
-  var overlay = document.getElementById('docOverlay');
-  var sheet = document.getElementById('docSheet');
-  var rendered = false;
-  function ensureRendered(){ if(!rendered){ sheet.innerHTML = renderMarkdown(RESUME_MD); rendered = true; } }
-  ensureRendered(); /* 预渲染：兜底用户直接 Cmd+P 打印 */
-  function openDoc(){ ensureRendered(); overlay.classList.add('open'); document.body.style.overflow='hidden'; }
-  function closeDoc(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
-
-  document.getElementById('fabResume').addEventListener('click', openDoc);
-  document.getElementById('docClose').addEventListener('click', closeDoc);
-  document.getElementById('docScroll').addEventListener('click', function(e){ if(e.target === this) closeDoc(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeDoc(); });
-
-  function toast(msg){
-    var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
-    clearTimeout(t._timer); t._timer = setTimeout(function(){t.classList.remove('show');}, 2200);
-  }
-
-  document.getElementById('btnCopy').addEventListener('click', function(){
-    function ok(){ toast('Markdown 已复制到剪贴板'); }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(RESUME_MD).then(ok).catch(fallback);
-    } else { fallback(); }
-    function fallback(){
-      var ta = document.createElement('textarea');
-      ta.value = RESUME_MD; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select();
-      try{ document.execCommand('copy'); ok(); }catch(e){ toast('复制失败，请手动选择文本'); }
-      document.body.removeChild(ta);
-    }
+  var sheet=document.getElementById('sheet'),ov=document.getElementById('ov'),doc=document.getElementById('doc');
+  doc.innerHTML=render(MD);
+  function open(){sheet.classList.add('open');ov.classList.add('open');document.body.style.overflow='hidden';}
+  function close(){sheet.classList.remove('open');ov.classList.remove('open');document.body.style.overflow='';}
+  document.getElementById('navResume').addEventListener('click',function(e){e.preventDefault();open();});
+  document.getElementById('endResume').addEventListener('click',open);
+  document.getElementById('btnClose').addEventListener('click',close);
+  ov.addEventListener('click',close);
+  addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  function toast(t){var x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(x._t);x._t=setTimeout(function(){x.classList.remove('show')},2000);}
+  document.getElementById('btnCopy').addEventListener('click',function(){
+    function ok(){toast('Markdown 已复制')}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(MD).then(ok).catch(fb);}else fb();
+    function fb(){var t=document.createElement('textarea');t.value=MD;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok();}catch(e){toast('复制失败，请手动选择')}document.body.removeChild(t);}
   });
-
-  document.getElementById('btnDownload').addEventListener('click', function(){
-    var blob = new Blob([RESUME_MD], {type:'text/markdown;charset=utf-8'});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url; a.download = '钟镇杰-AI产品经理-简历.md';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function(){URL.revokeObjectURL(url);}, 1000);
-    toast('简历 .md 已开始下载');
+  document.getElementById('btnDl').addEventListener('click',function(){
+    var u=URL.createObjectURL(new Blob([MD],{type:'text/markdown;charset=utf-8'}));
+    var a=document.createElement('a');a.href=u;a.download='钟镇杰-AI产品经理-简历.md';document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(u)},800);toast('简历 .md 已下载');
   });
-
-  document.getElementById('btnPrint').addEventListener('click', function(){
-    ensureRendered();
-    overlay.classList.add('open');
-    setTimeout(function(){ window.print(); }, 120);
-  });
+  document.getElementById('btnPrint').addEventListener('click',function(){open();setTimeout(print,150);});
 })();
 </script>
 </body>
