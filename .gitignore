@@ -1,4 +1,4 @@
-_shots/
-_shots_doc/
+_shots*/
+_backup/
 .DS_Store
 *.log
