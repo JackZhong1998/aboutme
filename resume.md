@@ -85,6 +85,7 @@ https://www.voicemind.cc ｜ https://github.com/JackZhong1998/voicemind
 https://www.bewithyou.online
 
 - 以声音和角色作为人与 AI 的接触面，已实现英语学习场景；探索同传、导游与户外陪伴等声音导向应用。
+- **全栈能力沉淀**：开源两套全栈 SaaS 框架（认证、Stripe 支付、数据库、SEO、多语言），从产品设计到部署上线的完整链路已跑通多次。
 
 ## 其他工作经历
 
@@ -109,11 +110,10 @@ https://www.bewithyou.online
 - **金证科技｜2022.03 — 2022.06**：微信搜一搜算法评测，评估 3000+ 返回结果，参与标准制定。
 - **广东道一｜2021.06 — 2022.03**：企业低代码平台需求管理与私有化交付。
 
-## 方法论与写作
+## 写作
 
 - **Agent 执行框架的定义和实践**：结合 Agent 产品实践，整理执行框架的定义与实践方法。https://mp.weixin.qq.com/s/w9wHKlQ7cWqUr1QWaK-q0w
 - **Attention 工作法**：围绕任务上下文、目标描述、人机分工与结果验收总结 LLM 协作方法，并应用于 todoAgent。
-- **开发实践**：开源两套全栈 SaaS 框架，积累认证、支付、数据库与产品上线经验。
 
 ## 教育背景
 
