@@ -129,9 +129,16 @@ def build_pdf():
         c.drawString(48, 24, "钟镇杰 | AI 产品经理")
         c.drawRightString(547, 24, str(doc.page))
 
+    def first_page(c, doc):
+        # Draw headshot in top-right corner.
+        img_path = str(ROOT / "assets" / "img" / "avatar.jpg")
+        if Path(img_path).exists():
+            c.drawImage(img_path, 495, 720, width=52, height=68, mask='auto')
+        footer(c, doc)
+
     SimpleDocTemplate(str(ROOT / "resume.pdf"), pagesize=(595.28, 841.89), leftMargin=48, rightMargin=48,
                       topMargin=36, bottomMargin=44, title="钟镇杰｜AI产品经理｜简历",
-                      author="钟镇杰").build(story, onFirstPage=footer, onLaterPages=footer)
+                      author="钟镇杰").build(story, onFirstPage=first_page, onLaterPages=footer)
 
 
 if __name__ == "__main__":
