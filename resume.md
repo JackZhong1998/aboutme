@@ -113,7 +113,7 @@ https://www.bewithyou.online
 ## 写作
 
 - **Agent 执行框架的定义和实践**：结合 Agent 产品实践，整理执行框架的定义与实践方法。https://mp.weixin.qq.com/s/w9wHKlQ7cWqUr1QWaK-q0w
-- **Attention 工作法**：围绕任务上下文、目标描述、人机分工与结果验收总结 LLM 协作方法，并应用于 todoAgent。
+- **Attention 工作法**：围绕任务上下文、目标描述、人机分工与结果验收总结 LLM 协作方法，并应用于 todoAgent。https://m.okjike.com/originalPosts/69d68222d58ea614cfd13e50
 
 ## 教育背景
 

@@ -103,7 +103,7 @@ def build_pdf():
             url = m[0]
             if "github.com" in url:
                 label = "代码"
-            elif "mp.weixin" in url:
+            elif "mp.weixin" in url or "okjike" in url:
                 label = "文章"
             else:
                 label = "官网"
