@@ -133,7 +133,7 @@ def build_pdf():
         # Draw headshot in top-right corner.
         img_path = str(ROOT / "assets" / "img" / "avatar.jpg")
         if Path(img_path).exists():
-            c.drawImage(img_path, 495, 720, width=52, height=68, mask='auto')
+            c.drawImage(img_path, 480, 715, width=68, height=88, mask='auto')
         footer(c, doc)
 
     SimpleDocTemplate(str(ROOT / "resume.pdf"), pagesize=(595.28, 841.89), leftMargin=48, rightMargin=48,
