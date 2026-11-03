@@ -56,7 +56,7 @@
 
 ### NowBuild.ai｜多 Agent 营销协作系统
 
-https://www.nowbuild.ai｜代码 https://github.com/JackZhong1998/N0707
+https://www.nowbuild.ai ｜ https://github.com/JackZhong1998/N0707
 
 - **多 Agent 团队协作**：不是单个 AI 助手，而是市场调研、增长策略、内容、渠道、SEO、目录、复盘七个专职 Agent 围绕同一个市场假设分工协作；每个 Agent 只负责自己的判断范围，由共享产品记忆串联。
 - **共享产品记忆**：产品事实、定位、语气、目标和真实反馈在所有 Agent 之间实时同步——新一轮对话不用重复交代背景，内容 Agent 知道调研结论，复盘 Agent 知道发布数据。
@@ -65,7 +65,7 @@ https://www.nowbuild.ai｜代码 https://github.com/JackZhong1998/N0707
 
 ### todoAgent｜任务上下文 Agent
 
-https://www.todoagent.cc/｜代码 https://github.com/JackZhong1998/todoagent
+https://www.todoagent.cc ｜ https://github.com/JackZhong1998/todoagent
 
 - **任务级上下文容器**：每条待办不只是「做什么」，而是绑定目标、约束、完成标准、相关材料和历史讨论；Agent 先读取任务全貌再决定执行路径，上下文随任务沉淀而非淹没在聊天记录里。
 - **可替代性引擎**：对每个任务自动分析哪些步骤适合 AI 完成、哪些需要人判断，给出「可替代/不可替代/待确认」的分级结论和依据；用户据此决定委派范围。
@@ -74,7 +74,7 @@ https://www.todoagent.cc/｜代码 https://github.com/JackZhong1998/todoagent
 
 ### VoiceMind｜实时语音 Super Agent
 
-https://www.voicemind.cc/｜代码 https://github.com/JackZhong1998/voicemind
+https://www.voicemind.cc ｜ https://github.com/JackZhong1998/voicemind
 
 - **Router 实时意图分流**：前台 Router Agent 持续监听语音流，实时判断这段话是「待整理的想法」还是「要执行的指令」；后台挂载待办生成、文档撰写、思维导图构建等执行 Agent，Router 将意图分发到对应 Agent，做到言出即出结果。
 - **动态任务上下文**：语音流是连续的，用户随时补充、修正、推翻前一句；Router 维护一份动态上下文，新指令只更新受影响的部分，不中断正在进行的执行，也不让旧结果覆盖用户刚改变的方向。

@@ -101,10 +101,12 @@ def build_pdf():
 
         def link(m):
             url = m[0]
-            if "mp.weixin" in url:
-                label = "文章链接"
+            if "github.com" in url:
+                label = "代码"
+            elif "mp.weixin" in url:
+                label = "文章"
             else:
-                label = url.replace("https://", "").rstrip("/")
+                label = "官网"
             return f'<a href="{url}" color="#0066cc">{label}</a>'
 
         return re.sub(r"https?://[^\s<｜]+", link, s)
