@@ -1,12 +1,15 @@
 # 钟镇杰
 
-**AI 产品经理｜Agent 协作设计 · 多模态产品 · 评测体系**
+**AI 产品经理｜百万 DAU 多模态 · SuperAgent 落地 · Vibe Coding**
 
 深圳｜zzhongzzhen@gmail.com｜https://okjk.co/SE5myF
 
-## 专业概述
+## 个人亮点
 
-我是 AI 产品经理，在剪映负责图片 Agent、剪辑 Agent 及字幕、数字人等多模态产品，同时独立开发并上线了三个面向海外的 Agent 应用（NowBuild、todoAgent、VoiceMind）。一边深入 Agent 的底层机制——System Prompt 工程、上下文管理、Router/Execution 架构、模型评测；一边把用户需求转化为可落地的产品体验——从用户研究、A/B 实验到人机协作交互设计。习惯用 Vibe Coding 自己动手做原型并全栈上线，对各类 Agent 产品有高强度的日常使用和持续思考。
+- **百万级 DAU 多模态产品**：在剪映主导图片 Agent 产品 0→1，支撑百万级 DAU 的 AI 图片创作场景，经历冷启动、模型迭代、规模化增长完整周期。
+- **独立上线 3 个海外 Agent 应用**：NowBuild（营销）、todoAgent（任务）、VoiceMind（实时语音），从产品设计到全栈开发、支付、部署一手完成。
+- **SuperAgent 架构产品化落地**：将 Router + Execution Agent 分离架构落地到实时语音、任务管理、营销协作三个真实场景，实践 System Prompt 工程、上下文管理与人机协作机制。
+- **完整 Agent 产品闭环**：System Prompt 设计 → 模型评测与 AB 实验 → 人机协作交互 → 数据驱动增长，同时是各类 Agent 产品的高强度日常用户。
 
 ## 核心能力
 
