@@ -83,13 +83,14 @@ def build_pdf():
     st = {
         "body": ParagraphStyle("b", fontSize=9, leading=14, textColor=body_c, spaceAfter=4, **base),
         "bullet": ParagraphStyle("l", fontSize=9, leading=14, textColor=body_c, spaceAfter=4,
-                                leftIndent=18, firstLineIndent=-14, **base),
+                                leftIndent=18, firstLineIndent=0, bulletIndent=4,
+                                bulletColor=colors.HexColor("#0066cc"), bulletFontSize=11, **base),
         "h1": ParagraphStyle("h1", fontSize=22, leading=28, textColor=ink, spaceAfter=2, **base),
         "h2": ParagraphStyle("h2", fontSize=13, leading=18, textColor=ink,
                              spaceBefore=12, spaceAfter=6, keepWithNext=True, **base),
         "h3": ParagraphStyle("h3", fontSize=11, leading=15, textColor=ink,
                              spaceBefore=9, spaceAfter=4, keepWithNext=True, **base),
-        "h4": ParagraphStyle("h4", fontSize=9.5, leading=13.5, textColor=muted_c,
+        "h4": ParagraphStyle("h4", fontSize=9.5, leading=13.5, textColor=ink,
                              spaceBefore=6, spaceAfter=2, keepWithNext=True, **base),
     }
 
@@ -116,8 +117,7 @@ def build_pdf():
             n = len(line) - len(line.lstrip("#"))
             story.append(Paragraph(markup(line[n:].strip()), st[f"h{n}"]))
         elif line.startswith("- "):
-            # Use middle dot (U+00B7) which exists in WenQuanYi font.
-            story.append(Paragraph(f'<font color="#0066cc"><b>·</b></font>&nbsp;&nbsp;{markup(line[2:])}', st["bullet"]))
+            story.append(Paragraph(markup(line[2:]), st["bullet"], bulletText="·"))
         else:
             story.append(Paragraph(markup(line), st["body"]))
 
