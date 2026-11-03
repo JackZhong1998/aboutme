@@ -86,18 +86,21 @@ def build_pdf():
             continue
     else:
         raise SystemExit("No embeddable CJK TrueType font found")
-    ink, body_c = colors.HexColor("#1d1d1f"), colors.HexColor("#43434a")
+    ink, body_c = colors.HexColor("#1d1d1f"), colors.HexColor("#3a3a42")
+    muted_c = colors.HexColor("#6e6e76")
     base = dict(fontName="CJK", wordWrap="CJK")
+    # Generous leading for Chinese: 9pt font × 14.5pt leading ≈ 1.6× ratio.
+    # Bullets get 4pt vertical gap; headings carry clear breathing room.
     st = {
-        "body": ParagraphStyle("b", fontSize=8.5, leading=11.8, textColor=body_c, spaceAfter=1.5, **base),
-        "bullet": ParagraphStyle("l", fontSize=8.5, leading=11.8, textColor=body_c, spaceAfter=1.5,
-                                 leftIndent=10, firstLineIndent=-8, **base),
-        "h1": ParagraphStyle("h1", fontSize=22, leading=29, textColor=ink, spaceAfter=4, **base),
-        "h2": ParagraphStyle("h2", fontSize=12, leading=16, textColor=ink, spaceBefore=6, spaceAfter=3,
+        "body": ParagraphStyle("b", fontSize=9, leading=14.5, textColor=body_c, spaceAfter=5, **base),
+        "bullet": ParagraphStyle("l", fontSize=9, leading=14.5, textColor=body_c, spaceAfter=4,
+                                 leftIndent=14, firstLineIndent=-10, bulletIndent=2, **base),
+        "h1": ParagraphStyle("h1", fontSize=22, leading=28, textColor=ink, spaceAfter=2, **base),
+        "h2": ParagraphStyle("h2", fontSize=13, leading=18, textColor=ink, spaceBefore=14, spaceAfter=7,
                              keepWithNext=True, **base),
-        "h3": ParagraphStyle("h3", fontSize=10.5, leading=15, textColor=ink, spaceBefore=6, spaceAfter=2,
+        "h3": ParagraphStyle("h3", fontSize=11, leading=16, textColor=ink, spaceBefore=10, spaceAfter=4,
                              keepWithNext=True, **base),
-        "h4": ParagraphStyle("h4", fontSize=9.5, leading=14, textColor=ink, spaceBefore=5, spaceAfter=2,
+        "h4": ParagraphStyle("h4", fontSize=9.5, leading=14, textColor=muted_c, spaceBefore=7, spaceAfter=3,
                              keepWithNext=True, **base),
     }
 
@@ -137,8 +140,8 @@ def build_pdf():
         c.drawString(40, 24, "钟镇杰 | AI 产品经理")
         c.drawRightString(555, 24, str(doc.page))
 
-    SimpleDocTemplate(str(ROOT / "resume.pdf"), pagesize=(595.28, 841.89), leftMargin=40, rightMargin=40,
-                      topMargin=28, bottomMargin=36, title="钟镇杰｜AI产品经理｜简历",
+    SimpleDocTemplate(str(ROOT / "resume.pdf"), pagesize=(595.28, 841.89), leftMargin=48, rightMargin=48,
+                      topMargin=36, bottomMargin=44, title="钟镇杰｜AI产品经理｜简历",
                       author="钟镇杰").build(story, onFirstPage=footer, onLaterPages=footer)
 
 
