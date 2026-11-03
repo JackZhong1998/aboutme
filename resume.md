@@ -1,8 +1,8 @@
 # 钟镇杰
 
-**AI 产品经理｜百万 DAU 多模态 · SuperAgent 落地 · Vibe Coding**
+**AI 产品经理｜百万 DAU 多模态 · Agent 0→1 · 模型评测与数据驱动**
 
-深圳｜zzhongzzhen@gmail.com｜https://okjk.co/SE5myF
+深圳｜zzhongzzhen@gmail.com
 
 ## 个人亮点
 
@@ -93,7 +93,7 @@ https://www.bewithyou.online
 2024.07 — 2025.02
 
 - 定义海外互动小说、漫画与角色陪伴产品，结合 Reddit、X、AO3、Pixiv 社区研究确定市场切入。
-- 完成 LLM 选型、AI 工作流与 MVP 冷启动，统筹定价、商业模式、GTM 与增长；首次互动人均约 80 轮、1.5 小时，次留约八成。
+- 完成 LLM 选型、AI 工作流与 MVP 冷启动，统筹定价、商业模式、GTM 与增长；首次互动人均约 80 轮、1.5 小时，次留 80%+。
 
 ### 广州倍趣网络｜AI 产品经理
 

@@ -70,49 +70,37 @@ def build_pdf():
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import Paragraph, SimpleDocTemplate, PageBreak
 
-    font_candidates = [
-        ("/System/Library/Fonts/STHeiti Light.ttc", 0),
-        ("/System/Library/Fonts/Supplemental/Songti.ttc", 0),
-        ("/System/Library/Fonts/Supplemental/Arial Unicode.ttf", 0),
-        ("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 0),
-    ]
-    for font_path, idx in font_candidates:
-        if not Path(font_path).exists():
-            continue
-        try:
-            pdfmetrics.registerFont(TTFont("CJK", font_path, subfontIndex=idx))
-            break
-        except Exception:
-            continue
-    else:
-        raise SystemExit("No embeddable CJK TrueType font found")
-    ink, body_c = colors.HexColor("#1d1d1f"), colors.HexColor("#3a3a42")
-    muted_c = colors.HexColor("#6e6e76")
+    # Use WenQuanYi Zen Hei (TTF, reportlab-compatible) for CJK.
+    # No separate bold TTF available; create hierarchy via color + size contrast.
+    pdfmetrics.registerFont(TTFont("CJK", "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", subfontIndex=0))
+    pdfmetrics.registerFontFamily("CJK", normal="CJK", bold="CJK", italic="CJK", boldItalic="CJK")
+
+    ink = colors.HexColor("#111114")
+    body_c = colors.HexColor("#4a4a52")
+    muted_c = colors.HexColor("#8e8e96")
     base = dict(fontName="CJK", wordWrap="CJK")
-    # Generous leading for Chinese: 9pt font × 14.5pt leading ≈ 1.6× ratio.
-    # Bullets get 4pt vertical gap; headings carry clear breathing room.
+
     st = {
-        "body": ParagraphStyle("b", fontSize=9, leading=14.5, textColor=body_c, spaceAfter=5, **base),
-        "bullet": ParagraphStyle("l", fontSize=9, leading=14.5, textColor=body_c, spaceAfter=4,
-                                 leftIndent=14, firstLineIndent=-10, bulletIndent=2, **base),
+        "body": ParagraphStyle("b", fontSize=9, leading=14, textColor=body_c, spaceAfter=4, **base),
+        "bullet": ParagraphStyle("l", fontSize=9, leading=14, textColor=body_c, spaceAfter=4,
+                                leftIndent=18, firstLineIndent=-14, **base),
         "h1": ParagraphStyle("h1", fontSize=22, leading=28, textColor=ink, spaceAfter=2, **base),
-        "h2": ParagraphStyle("h2", fontSize=13, leading=18, textColor=ink, spaceBefore=14, spaceAfter=7,
-                             keepWithNext=True, **base),
-        "h3": ParagraphStyle("h3", fontSize=11, leading=16, textColor=ink, spaceBefore=10, spaceAfter=4,
-                             keepWithNext=True, **base),
-        "h4": ParagraphStyle("h4", fontSize=9.5, leading=14, textColor=muted_c, spaceBefore=7, spaceAfter=3,
-                             keepWithNext=True, **base),
+        "h2": ParagraphStyle("h2", fontSize=13, leading=18, textColor=ink,
+                             spaceBefore=12, spaceAfter=6, keepWithNext=True, **base),
+        "h3": ParagraphStyle("h3", fontSize=11, leading=15, textColor=ink,
+                             spaceBefore=9, spaceAfter=4, keepWithNext=True, **base),
+        "h4": ParagraphStyle("h4", fontSize=9.5, leading=13.5, textColor=muted_c,
+                             spaceBefore=6, spaceAfter=2, keepWithNext=True, **base),
     }
 
     def markup(s: str) -> str:
         s = html.escape(s)
-        s = re.sub(r"\*\*(.+?)\*\*", r'<font color="#1d1d1f">\1</font>', s)
+        # Bold lead labels: dark ink color (visual hierarchy without bold TTF).
+        s = re.sub(r"\*\*(.+?)\*\*", r'<font color="#111114">\1</font>', s)
 
         def link(m):
             url = m[0]
-            if "originalPosts" in url:
-                label = "即刻原文"
-            elif "mp.weixin" in url:
+            if "mp.weixin" in url:
                 label = "文章链接"
             else:
                 label = url.replace("https://", "").rstrip("/")
@@ -124,21 +112,20 @@ def build_pdf():
     for line in MD.splitlines():
         if not line.strip():
             continue
-        if line == "## 独立 Agent 产品实践":
-            story.append(PageBreak())
         if line.startswith("#"):
             n = len(line) - len(line.lstrip("#"))
             story.append(Paragraph(markup(line[n:].strip()), st[f"h{n}"]))
         elif line.startswith("- "):
-            story.append(Paragraph("• " + markup(line[2:]), st["bullet"]))
+            # Use middle dot (U+00B7) which exists in WenQuanYi font.
+            story.append(Paragraph(f'<font color="#0066cc"><b>·</b></font>&nbsp;&nbsp;{markup(line[2:])}', st["bullet"]))
         else:
             story.append(Paragraph(markup(line), st["body"]))
 
     def footer(c, doc):
         c.setFont("CJK", 7.5)
-        c.setFillColor(colors.HexColor("#808087"))
-        c.drawString(40, 24, "钟镇杰 | AI 产品经理")
-        c.drawRightString(555, 24, str(doc.page))
+        c.setFillColor(colors.HexColor("#86868e"))
+        c.drawString(48, 24, "钟镇杰 | AI 产品经理")
+        c.drawRightString(547, 24, str(doc.page))
 
     SimpleDocTemplate(str(ROOT / "resume.pdf"), pagesize=(595.28, 841.89), leftMargin=48, rightMargin=48,
                       topMargin=36, bottomMargin=44, title="钟镇杰｜AI产品经理｜简历",
