@@ -1,6 +1,9 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>钟镇杰｜AI 产品经理 · 简历</title><meta name="description" content="钟镇杰的简历：剪映 AI 产品、Agent 评测、独立产品与多模态。"><meta property="og:title" content="钟镇杰｜AI 产品经理"><meta property="og:description" content="工作经历与独立产品"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23fff'/%3E%3Cpath d='M8 9h16L8 23h16' stroke='%230066cc' stroke-width='3' fill='none'/%3E%3C/svg%3E"><style>
 :root{--ink:#1d1d1f;--muted:#626269;--line:#e8e8ed;--accent:#0066cc;--font:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif}*{box-sizing:border-box}body{margin:0;background:white;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}a{color:var(--accent);text-decoration:none;overflow-wrap:anywhere}a:hover{text-decoration:underline}button{font:inherit;cursor:pointer}a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}.toolbar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5}.toolbar-inner{max-width:960px;margin:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 20px}.toolbar .back{margin-right:auto;color:var(--muted);font-size:14px;min-height:44px;display:flex;align-items:center}.btn{min-height:44px;padding:10px 15px;border:1px solid #dddde3;border-radius:24px;background:#fff;color:var(--ink);font-size:14px;display:inline-flex;align-items:center;justify-content:center;transition:background .2s}.btn:hover{text-decoration:none;background:#f5f5f7}.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.document{max-width:820px;margin:0 auto;padding:46px 22px 80px;line-height:1.9;font-size:15px}h1{font-size:38px;letter-spacing:-1px;margin:0 0 6px}h2{font-size:23px;line-height:1.4;margin:38px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--line)}h3{font-size:19px;line-height:1.5;margin:24px 0 10px}h4{font-size:16px;margin:22px 0 10px}p{margin:10px 0;color:#43434a}ul{padding-left:22px;margin:10px 0 20px}li{margin:9px 0;color:#43434a;padding-left:3px}li strong{color:var(--ink)}blockquote{background:#f7f8fa;border-radius:12px;margin:20px 0;padding:13px 18px;color:var(--muted);font-size:14px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,10px);opacity:0;transition:.2s;background:#1d1d1f;color:#fff;padding:13px 20px;border-radius:24px;font-size:14px;pointer-events:none;z-index:60;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}@media(min-width:768px){.document{padding:64px 36px 100px;font-size:15px}}@media print{.toolbar,.toast{display:none!important}.document{margin:0;max-width:none;padding:0;font-size:10pt;line-height:1.65}h1{font-size:23pt}h2{font-size:14pt;margin-top:20pt}h3{font-size:12pt}h4{font-size:10.5pt}h1,h2,h3,h4{break-after:avoid}li{margin:5pt 0;break-inside:avoid}p{orphans:3;widows:3}a{color:inherit;text-decoration:none}blockquote{font-size:9pt}@page{size:A4;margin:15mm}}
 
+/* Product names link directly to their official sites. */
+h3 a{color:var(--ink);text-decoration:underline;text-decoration-color:#a4b8ce;text-decoration-thickness:1px;text-underline-offset:4px}h3 a:hover{color:var(--accent);text-decoration-color:currentColor}
+
 /* Header retreats while swiping up; returns while swiping down. */
 .scroll-header{transition:transform .22s ease,visibility .22s;will-change:transform}
 .scroll-header.is-hidden{transform:translateY(-110%);visibility:hidden;pointer-events:none}
@@ -11,19 +14,10 @@
 <p>深圳｜zzhongzzhen@gmail.com</p>
 <h2>个人亮点</h2>
 <ul>
-<li><strong>百万级 DAU 多模态产品</strong>：在剪映主导图片 Agent 产品 0→1，支撑百万级 DAU 的 AI 图片创作场景，经历冷启动、模型迭代、规模化增长完整周期。</li>
-<li><strong>SuperAgent 架构产品化落地</strong>：将 Router + Execution Agent 分离架构落地到实时语音、任务管理、营销协作三个真实场景。</li>
-<li><strong>独立交付多个全栈 Agent 应用</strong>：独立完成产品设计、前后端、登录支付到部署的完整交付；日常深度使用 Cursor、Codex、Grok 等 Agent 工具。</li>
-<li><strong>用户功能数据与 A/B 实验驱动迭代</strong>：围绕功能触达、使用路径、完成率与转化，通过行为数据与 A/B 实验定位体验问题并推动功能迭代。</li>
-</ul>
-<h2>核心能力</h2>
-<ul>
-<li><strong>Agent 架构与 Harness 设计</strong>：熟悉 Router/Execution Agent 分离、System Prompt 工程、工具调用与上下文分层管理；在剪映主导图片 Agent、剪辑 Agent 的策略设计，独立产品中实践项目级上下文持久化与动态任务调度。</li>
-<li><strong>模型评测与迭代闭环</strong>：制定生图模型、ASR、剪辑 Agent 的评测标准与评测集，建设有真值/无真值机评、云真机自动化评测链路；通过 AB 实验与灰度数据推动模型选型、采纳率与业务指标增长。</li>
-<li><strong>用户需求与数据驱动</strong>：结合用户访谈、竞品调研、行为数据与 A/B 实验定位问题；从需求洞察到 0→1 冷启动，独立完成图片 Web 产品从市场切入到百万级 DAU 的规模化增长。</li>
-<li><strong>人机协作体验设计</strong>：设计人与 Agent 的协作机制——渐进式确认、任务中可随时纠偏、结果可追溯到来源；在语音、对话、画板等多模态场景落地完整闭环。</li>
-<li><strong>独立交付与快速验证</strong>：能用 AI 辅助独立完成前端、后端、登录、支付、部署全流程；多个独立产品均从产品设计到上线一手完成，具备工程师思维与快速验证能力。</li>
-<li><strong>高强度 Agent 用户</strong>：深度使用各类 Agent 产品并融入日常工作流；对模型行为有品味和判断力，对边界场景、失败模式与用户真实任务有敏锐感知。</li>
+<li><strong>百万级 DAU 产品经验，从 0→1 到持续增长</strong>：主导剪映图片 Web 产品从需求洞察、冷启动到持续迭代，推动图片创作业务规模化，覆盖百万级 DAU 场景。结合用户研究、行为数据与 <strong>A/B Test</strong>，优化功能入口、编辑器交互和创作路径，带动活跃至导出转化率提升 <strong>11%</strong>、Agent 创作场景次留提升 <strong>25%</strong>。</li>
+<li><strong>Agent 架构与 Harness 设计，打通评测到迭代的闭环</strong>：具备 <strong>Agent Loop、System Prompt、上下文管理、Skill 与工具调用</strong>的设计实践，能结合模型能力边界设计执行策略。推动端到端效果评测与 <strong>Trace 无标准答案机评</strong>落地，区分规划、工具、上下文及下游服务问题，用评测反馈推动策略迭代，剪辑任务承接率由 <strong>70% 提升至 90%</strong>、采纳率由 <strong>50% 提升至 65%</strong>。</li>
+<li><strong>能亲手把想法做成产品，独立交付多个全栈 Agent 应用</strong>：具备工程师思维，能借助 AI 独立完成产品与交互设计、前后端开发、登录支付及部署上线，把需求快速做成可体验、可验证的产品。日常深度使用 <strong>Cursor、Codex、Grok</strong> 等 AI 工具，既是高强度用户，也持续通过开发实践理解其能力边界，将新能力转化为产品方案。</li>
+<li><strong>持续探索人与 AI 的高效协作，并落地为产品机制</strong>：在语音、待办与营销协作产品中实践 <strong>SuperAgent：前台对话与后台执行分离、多 Agent 分工、共享与任务级上下文</strong>。让 Agent 在用户当前任务和注意力所在的位置承接背景，减少重复输入；通过渐进式确认、执行中纠偏与结果验收，让用户能边表达、边委派、边调整，而不必在聊天与工作之间反复切换。</li>
 </ul>
 <h2>工作经历</h2>
 <h3>字节跳动｜剪映 AI 产品经理</h3>
@@ -55,34 +49,29 @@
 </ul>
 <h2>独立产品实践</h2>
 <p>独立完成产品设计、全栈开发与上线。三个产品共享同一套架构思路：统一的意图入口、分层的执行 Agent、随任务持久化的上下文、渐进式的人机确认。</p>
-<h3>NowBuild.ai｜多 Agent 营销协作系统</h3>
-<p><a href="https://www.nowbuild.ai" target="_blank" rel="noopener noreferrer">www.nowbuild.ai</a> ｜ <a href="https://github.com/JackZhong1998/N0707" target="_blank" rel="noopener noreferrer">github.com/JackZhong1998/N0707</a></p>
+<h3><a href="https://www.nowbuild.ai" target="_blank" rel="noopener noreferrer">NowBuild.ai</a>｜多 Agent 营销协作系统</h3>
 <ul>
 <li><strong>多 Agent 团队协作</strong>：不是单个 AI 助手，而是市场调研、增长策略、内容、渠道、SEO、目录、复盘七个专职 Agent 围绕同一个市场假设分工协作；每个 Agent 只负责自己的判断范围，由共享产品记忆串联。</li>
 <li><strong>共享产品记忆</strong>：产品事实、定位、语气、目标和真实反馈在所有 Agent 之间实时同步——新一轮对话不用重复交代背景，内容 Agent 知道调研结论，复盘 Agent 知道发布数据。</li>
 <li><strong>Channel Skills 分层执行</strong>：28+ 平台原生 Skill，每个渠道（Reddit/X/LinkedIn/小红书/TikTok 等）有独立的社区语境、格式规则和执行方法；同一市场假设下产出的是各平台原生内容，而不是一篇文案到处发。</li>
 <li><strong>反馈闭环</strong>：Review Agent 每周整合发布记录、互动数据和用户反馈，调整下周策略方向——Agent 团队不是一次性出方案，而是在 30 天 Campaign 里持续学习和修正。</li>
 </ul>
-<h3>todoAgent｜任务上下文 Agent</h3>
-<p><a href="https://www.todoagent.cc" target="_blank" rel="noopener noreferrer">www.todoagent.cc</a> ｜ <a href="https://github.com/JackZhong1998/todoagent" target="_blank" rel="noopener noreferrer">github.com/JackZhong1998/todoagent</a></p>
+<h3><a href="https://www.todoagent.cc" target="_blank" rel="noopener noreferrer">todoAgent</a>｜任务上下文 Agent</h3>
 <ul>
 <li><strong>任务级上下文容器</strong>：每条待办不只是「做什么」，而是绑定目标、约束、完成标准、相关材料和历史讨论；Agent 先读取任务全貌再决定执行路径，上下文随任务沉淀而非淹没在聊天记录里。</li>
 <li><strong>可替代性引擎</strong>：对每个任务自动分析哪些步骤适合 AI 完成、哪些需要人判断，给出「可替代/不可替代/待确认」的分级结论和依据；用户据此决定委派范围。</li>
 <li><strong>SOP 自动沉淀</strong>：完成后的任务自动提炼为可复用 SOP，相似任务下次直接参考已确认做法，人机分工边界随使用次数越来越清晰。</li>
 <li><strong>渐进式自动化</strong>：从「AI 建议、人执行」到「AI 执行、人确认」再到「低风险步骤自动完成」，按信任积累逐步放权，全程可追溯、可干预。</li>
 </ul>
-<h3>VoiceMind｜实时语音 Super Agent</h3>
-<p><a href="https://www.voicemind.cc" target="_blank" rel="noopener noreferrer">www.voicemind.cc</a> ｜ <a href="https://github.com/JackZhong1998/voicemind" target="_blank" rel="noopener noreferrer">github.com/JackZhong1998/voicemind</a></p>
+<h3><a href="https://www.voicemind.cc" target="_blank" rel="noopener noreferrer">VoiceMind</a>｜实时语音 Super Agent</h3>
 <ul>
 <li><strong>Router 实时意图分流</strong>：前台 Router Agent 持续监听语音流，实时判断这段话是「待整理的想法」还是「要执行的指令」；后台挂载待办生成、文档撰写、思维导图构建等执行 Agent，Router 将意图分发到对应 Agent，做到言出即出结果。</li>
 <li><strong>动态任务上下文</strong>：语音流是连续的，用户随时补充、修正、推翻前一句；Router 维护一份动态上下文，新指令只更新受影响的部分，不中断正在进行的执行，也不让旧结果覆盖用户刚改变的方向。</li>
 <li><strong>思考与执行不割裂</strong>：语音同时承担「梳理思路的外化出口」和「向 Agent 下达任务的命令通道」；用户不需要在「记录想法」和「开始执行」之间切换——边说边整理为结构化产出，随时插话、暂停、改方向。</li>
 </ul>
-<h3>bewithyou｜Personal Agent 交互</h3>
-<p><a href="https://www.bewithyou.online" target="_blank" rel="noopener noreferrer">www.bewithyou.online</a></p>
+<h3><a href="https://www.bewithyou.online" target="_blank" rel="noopener noreferrer">bewithyou</a>｜Personal Agent 交互</h3>
 <ul>
 <li>以声音和角色作为人与 AI 的接触面，已实现英语学习场景；探索同传、导游与户外陪伴等声音导向应用。</li>
-<li><strong>全栈能力沉淀</strong>：开源两套全栈 SaaS 框架（认证、Stripe 支付、数据库、SEO、多语言），从产品设计到部署上线的完整链路已跑通多次。</li>
 </ul>
 <h2>其他工作经历</h2>
 <h3>广州智焰科技｜产品负责人</h3>

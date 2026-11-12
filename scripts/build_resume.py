@@ -10,21 +10,51 @@ ROOT = Path(__file__).resolve().parent.parent
 MD = (ROOT / "resume.md").read_text(encoding="utf-8")
 
 
-def inline(s: str) -> str:
-    s = html.escape(s)
-    s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+def format_inline(s: str, *, pdf: bool = False) -> str:
+    """Render safe Markdown links and emphasis for HTML and ReportLab."""
+    tokens = {}
 
-    def link(m):
-        url = m[1]
+    def store(value: str) -> str:
+        key = f"@@LINK{len(tokens)}@@"
+        tokens[key] = value
+        return key
+
+    def anchor(label: str, url: str) -> str:
+        if not re.match(r"^https?://", url, flags=re.I):
+            return label
+        url = html.escape(url, quote=True)
+        if pdf:
+            return f'<a href="{url}" color="#0066cc"><u>{label}</u></a>'
+        return f'<a href="{url}" target="_blank" rel="noopener noreferrer">{label}</a>'
+
+    def named_link(match):
+        return store(anchor(html.escape(match[1]), match[2]))
+
+    s = re.sub(r"\[([^\]]+)\]\((https?://[^\s)]+)\)", named_link, s)
+
+    def bare_link(match):
+        url = match[0]
         if "originalPosts" in url:
             label = "即刻原文"
         elif "mp.weixin" in url:
             label = "微信文章"
         else:
-            label = url.replace("https://", "").rstrip("/")
-        return f'<a href="{url}" target="_blank" rel="noopener noreferrer">{label}</a>'
+            label = "官网"
+        return store(anchor(label, url))
 
-    return re.sub(r"(https?://[^\s<｜]+)", link, s)
+    s = re.sub(r"https?://[^\s<｜]+", bare_link, s)
+    s = html.escape(s)
+    if pdf:
+        s = re.sub(r"\*\*(.+?)\*\*", r'<font color="#111114">\1</font>', s)
+    else:
+        s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    for key, value in tokens.items():
+        s = s.replace(key, value)
+    return s
+
+
+def inline(s: str) -> str:
+    return format_inline(s)
 
 
 def render(md: str) -> str:
@@ -70,9 +100,16 @@ def build_pdf():
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import Paragraph, SimpleDocTemplate, PageBreak
 
-    # Use WenQuanYi Zen Hei (TTF, reportlab-compatible) for CJK.
-    # No separate bold TTF available; create hierarchy via color + size contrast.
-    pdfmetrics.registerFont(TTFont("CJK", "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", subfontIndex=0))
+    # Keep the original font on Linux; use the available Unicode TTF on macOS.
+    font_candidates = (
+        Path("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"),
+        Path("/Library/Fonts/Arial Unicode.ttf"),
+        Path("/System/Library/Fonts/Supplemental/Arial Unicode.ttf"),
+    )
+    font_path = next((p for p in font_candidates if p.is_file()), None)
+    if font_path is None:
+        raise RuntimeError("A ReportLab-compatible CJK TTF font is required.")
+    pdfmetrics.registerFont(TTFont("CJK", str(font_path), subfontIndex=0))
     pdfmetrics.registerFontFamily("CJK", normal="CJK", bold="CJK", italic="CJK", boldItalic="CJK")
 
     ink = colors.HexColor("#111114")
@@ -95,21 +132,7 @@ def build_pdf():
     }
 
     def markup(s: str) -> str:
-        s = html.escape(s)
-        # Bold lead labels: dark ink color (visual hierarchy without bold TTF).
-        s = re.sub(r"\*\*(.+?)\*\*", r'<font color="#111114">\1</font>', s)
-
-        def link(m):
-            url = m[0]
-            if "github.com" in url:
-                label = "代码"
-            elif "mp.weixin" in url or "okjike" in url:
-                label = "文章"
-            else:
-                label = "官网"
-            return f'<a href="{url}" color="#0066cc">{label}</a>'
-
-        return re.sub(r"https?://[^\s<｜]+", link, s)
+        return format_inline(s, pdf=True)
 
     story = []
     for line in MD.splitlines():
